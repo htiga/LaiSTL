@@ -16,12 +16,15 @@ namespace lai
     {
     public:
         using value_type = T;
+        using allocator_type = Allocator;
         using size_type = std::size_t;
         using difference_type = std::ptrdiff_t;
         using reference = T &;
         using const_reference = const T &;
-        using iterator = T *;
-        using const_iterator = const T *;
+        using pointer = typename std::allocator_traits<Allocator>::pointer;
+        using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
+        using iterator = typename std::allocator_traits<Allocator>::pointer;;
+        using const_iterator = typename std::allocator_traits<Allocator>::const_pointer;
 
     public:
 
@@ -302,7 +305,6 @@ namespace lai
                 dataBegin = newDataBegin;
                 dataEnd = newDataEnd;
                 storageEnd = dataBegin + newCapacity;
-
             }
             else
             {
@@ -345,7 +347,6 @@ namespace lai
                 dataBegin = newDataBegin;
                 dataEnd = newDataEnd;
                 storageEnd = dataBegin + newCapacity;
-
             }
             else
             {
@@ -369,7 +370,7 @@ namespace lai
         iterator erase(const_iterator pos)
         {
             auto ptr = const_cast<iterator>(pos);
-            moveRange(ptr + 1, dataEnd, ptr);
+            std::move(ptr + 1, dataEnd, ptr);
             alloc.destroy(--dataEnd);
             return ptr;
         }
@@ -385,7 +386,7 @@ namespace lai
             else if (first != last)
             {
                 auto length = last - first;
-                moveRange(lastPtr, dataEnd, firstPtr);
+                std::move(lastPtr, dataEnd, firstPtr);
                 destroyRange(dataEnd - length, dataEnd);
                 dataEnd -= length;
             }
@@ -413,8 +414,6 @@ namespace lai
         void reallocate(size_type newCapacity);
         size_type growTo(size_type size);
         void checkReallocate();
-        void moveRange(value_type * sourceFirst, value_type * sourceLast, value_type * destFirst);
-        void moveBackward(value_type * sourceFirst, value_type * sourceLast, value_type * destLast);
         void destroyRange(value_type * first, value_type * last);
         void deallocateAll();
         void popBackN(size_type count);
@@ -527,11 +526,13 @@ namespace lai
         storageEnd = dataBegin + count;
     }
 
+
     template<typename T, typename Allocator>
     inline void vector<T, Allocator>::valueInitConstructAt(const value_type * pos)
     {
         alloc.construct(pos, value_type());
     }
+
 
     template<typename T, typename Allocator>
     void vector<T, Allocator>::valueInitConstructN(size_type count)
@@ -564,24 +565,6 @@ namespace lai
         {
             size_type newCapacity = size() ? 2 * size() : 1;
             reallocate(newCapacity);
-        }
-    }
-
-    template<typename T, typename Allocator>
-    inline void vector<T, Allocator>::moveRange(value_type * sourceFirst, value_type * sourceLast, value_type * destFirst)
-    {
-        while (sourceFirst != sourceLast)
-        {
-            *destFirst++ = std::move(*sourceFirst++);
-        }
-    }
-
-    template<typename T, typename Allocator>
-    void vector<T, Allocator>::moveBackward(value_type * sourceFirst, value_type * sourceLast, value_type * destLast)
-    {
-        while (sourceLast != sourceFirst)
-        {
-            *--destLast = std::move(*--sourceLast);
         }
     }
 

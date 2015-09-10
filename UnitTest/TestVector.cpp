@@ -338,8 +338,6 @@ namespace UnitTest
         TEST_METHOD(TestDefaultConstructor)
         {
             LAI_IVEC v;
-            IS_FALSE(v.begin());
-            IS_FALSE(v.end());
             IS_TRUE(v.begin() == v.end());
             IS_TRUE(v.empty());
             IS_TRUE(v.size() == 0);

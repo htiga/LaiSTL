@@ -223,7 +223,7 @@ namespace lai
                 reserve(count);
                 for (auto i = size(); i != count; ++i)
                 {
-                    valueInitConstructAt(dataEnd++);
+                    alloc.construct(dataEnd++);
                 }
             }
         }
@@ -247,12 +247,12 @@ namespace lai
             {
                 size_type pos = std::addressof(value) - begin();
                 checkReallocate();
-                copyConstructAt(dataEnd++, *(dataBegin + pos));
+                alloc.construct(dataEnd++, *(dataBegin + pos));
             }
             else
             {
                 checkReallocate();
-                copyConstructAt(dataEnd++, value);
+                alloc.construct(dataEnd++, value);
             }
         }
 
@@ -294,7 +294,7 @@ namespace lai
             {
                 auto ptr = const_cast<iterator>(pos);
                 auto newCapacity = growTo(size() + count);
-                auto newDataBegin = allocateN(newCapacity);
+                auto newDataBegin = alloc.allocate(newCapacity);
                 auto newDataEnd = std::uninitialized_copy(begin(), ptr, newDataBegin);
                 newDataEnd = std::uninitialized_fill_n(newDataEnd, count, value);
                 if (pos != end())
@@ -336,7 +336,7 @@ namespace lai
             {
                 auto ptr = const_cast<iterator>(pos);
                 auto newCapacity = growTo(size() + count);
-                auto newDataBegin = allocateN(newCapacity);
+                auto newDataBegin = alloc.allocate(newCapacity);
                 auto newDataEnd = std::uninitialized_copy(begin(), ptr, newDataBegin);
                 newDataEnd = std::uninitialized_copy(first, last, newDataEnd);
                 if (pos != end())
@@ -404,12 +404,9 @@ namespace lai
         size_type unusedCapacity() const noexcept;
         void checkRange(size_type pos) const;
         bool isInside(const value_type * iter) const noexcept;
-        T * allocateN(size_type capacity) const;
         template<typename InputIt, typename = std::enable_if_t<!std::is_integral<InputIt>::value>>
         void copyConstruct(InputIt sourceFirst, InputIt sourceLast);
-        void copyConstructAt(const value_type * pos, const value_type & val);
         void copyConstructN(size_type count, const value_type & val);
-        void valueInitConstructAt(const value_type * pos);
         void valueInitConstructN(size_type count);
         void reallocate(size_type newCapacity);
         size_type growTo(size_type size);
@@ -505,43 +502,22 @@ namespace lai
 
 
     template<typename T, typename Allocator>
-    inline T * vector<T, Allocator>::allocateN(size_type capacity) const
-    {
-        return alloc.allocate(capacity);
-    }
-
-
-    template<typename T, typename Allocator>
-    inline void vector<T, Allocator>::copyConstructAt(const value_type * pos, const value_type & val)
-    {
-        alloc.construct(pos, val);
-    }
-
-
-    template<typename T, typename Allocator>
     void vector<T, Allocator>::copyConstructN(size_type count, const value_type & val)
     {
-        dataBegin = allocateN(count);
+        dataBegin = alloc.allocate(count);
         dataEnd = std::uninitialized_fill_n(dataBegin, count, val);
         storageEnd = dataBegin + count;
     }
 
 
     template<typename T, typename Allocator>
-    inline void vector<T, Allocator>::valueInitConstructAt(const value_type * pos)
-    {
-        alloc.construct(pos, value_type());
-    }
-
-
-    template<typename T, typename Allocator>
     void vector<T, Allocator>::valueInitConstructN(size_type count)
     {
-        dataBegin = allocateN(count);
+        dataBegin = alloc.allocate(count);
         dataEnd = dataBegin;
         for (size_type i = 0; i != count; ++i)
         {
-            valueInitConstructAt(dataEnd++);
+            alloc.construct(dataEnd++);
         }
         storageEnd = dataBegin + count;
     }
@@ -552,7 +528,7 @@ namespace lai
     void vector<T, Allocator>::copyConstruct(InputIt sourceFirst, InputIt sourceLast)
     {
         auto length = sourceLast - sourceFirst;
-        dataBegin = allocateN(length);
+        dataBegin = alloc.allocate(length);
         dataEnd = std::uninitialized_copy(sourceFirst, sourceLast, dataBegin);
         storageEnd = dataBegin + length;
     }
@@ -572,7 +548,7 @@ namespace lai
     template<typename T, typename Allocator>
     void vector<T, Allocator>::reallocate(size_type newCapacity)
     {
-        auto newDataBegin = allocateN(newCapacity);
+        auto newDataBegin = alloc.allocate(newCapacity);
         auto newDataEnd = newDataBegin;
         for (auto iter = dataBegin; iter != dataEnd; ++iter)
         {

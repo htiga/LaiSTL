@@ -8,4 +8,5 @@ Using Microsoft CppUnitTestFramework.
 Current Progress
 ================
 
-vector.h
+Vector.h
+Deque.h

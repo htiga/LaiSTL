@@ -1,32 +1,29 @@
 #include "stdafx.h"
+#include "CommonTestUtilities.h"
 #include "../LaiSTL/Vector.h"
 #include <memory>
 #include <vector>
-#include <string>
 
-// following four macros undefined at end of this file.
 
 #define LAI_IVEC lai::vector<int>
 #define LAI_SVEC lai::vector<std::string>
+#define LAI_UVEC lai::vector<Uncopyable>
 #define STD_IVEC std::vector<int>
 #define STD_SVEC std::vector<std::string>
+#define STD_UVEC std::vector<Uncopyable>
 
 namespace UnitTest
 {
     TEST_CLASS(TestVector)
     {
     public:
-        using unCopyable = std::unique_ptr<int>;
-
-    public:
         TEST_METHOD(TestCapacityOperations)
         {
             int size = 3;
-            lai::vector<unCopyable> vec(size);
+            LAI_UVEC vec(size);
 
             IS_FALSE(vec.empty());
             IS_TRUE(vec.size() == size);
-            IS_TRUE(vec.capacity() == size);
 
             vec.reserve(20);
             IS_FALSE(vec.empty());
@@ -45,51 +42,29 @@ namespace UnitTest
 
         }
 
+        TEST_METHOD(TestDefaultConstructor)
+        {
+            TC_DefaultConstructor<LAI_IVEC>();
+            TC_DefaultConstructor<LAI_SVEC>();
+            TC_DefaultConstructor<LAI_UVEC>();
+        }
+
         TEST_METHOD(TestCountConstructor)
         {
-            int count = 10;
-            int initVal = 42;
-
-            LAI_IVEC vec1(count, initVal);
-            IS_TRUE(vec1.size() == count);
-            AssertContainerFilled(vec1, initVal);
-
-            lai::vector<unCopyable> vec2(count);
-            IS_TRUE(vec2.size() == count);
-            for (auto & i : vec2)
-            {
-                IS_TRUE(i == unCopyable());
-            }
-
-            LAI_IVEC vec3(0);
-            IS_TRUE(vec3.size() == 0);
+            TC_CountConstructor<LAI_IVEC>();
+            TC_CountConstructor<LAI_UVEC>();
+            TC_CountConstructor<LAI_SVEC>(std::string("lai"));
         }
 
         TEST_METHOD(TestRangeContructor)
         {
-            STD_IVEC stdV{ 0,1,2,3,4,5 };
-            LAI_IVEC laiV(stdV.begin(), stdV.end());
-            AssertContainerEqual(laiV, stdV);
-
-            LAI_IVEC laiV2(laiV.begin(), laiV.end());
-            AssertContainerEqual(laiV, laiV2);
-            AssertContainerEqual(laiV2, stdV);
+            TC_RangeConstructor<LAI_IVEC>();
+            TC_RangeConstructor<LAI_SVEC>();
         }
 
         TEST_METHOD(TestBracedListConstructor)
         {
-            LAI_IVEC v{ 10,20 };
-            AssertContainerEqual(v, STD_IVEC{10, 20});
-
-            LAI_IVEC v1{ 0,1,2 };
-            AssertContainerEqual(v1, STD_IVEC{ 0, 1, 2 });
-
-            LAI_IVEC v2{ 10 };
-            AssertContainerEqual(v2, STD_IVEC{10});
-
-            LAI_SVEC v3{ 10, "a" };
-            AssertContainerEqual(v3, STD_SVEC{10, "a"});
-
+            TC_BracedListConstructor(lai::vector);
         }
 
         TEST_METHOD(TestAt)
@@ -117,9 +92,9 @@ namespace UnitTest
 
         TEST_METHOD(TestMoveConstructor)
         {
-            lai::vector<unCopyable> v(3);
-            std::vector<unCopyable> stdV(3);
-            lai::vector<unCopyable> movedV(std::move(v));
+            LAI_UVEC v(3);
+            STD_UVEC stdV(3);
+            LAI_UVEC movedV(std::move(v));
 
             IS_TRUE(movedV.size() == 3);
             AssertContainerEqual(movedV, stdV);
@@ -131,10 +106,10 @@ namespace UnitTest
 
         TEST_METHOD(TestPushBack)
         {
-            lai::vector<unCopyable> v;
-            v.push_back(std::move(unCopyable()));
-            v.push_back(unCopyable());
-            AssertContainerEqual(v, std::vector<unCopyable>(2));
+            LAI_UVEC v;
+            v.push_back(std::move(Uncopyable()));
+            v.push_back(Uncopyable());
+            AssertContainerEqual(v, STD_UVEC(2));
 
             LAI_IVEC v1{ 1, 2 };
             v1.push_back(3);
@@ -158,11 +133,9 @@ namespace UnitTest
             v.emplace_back(std::move(s));
             AssertContainerEqual(v, STD_SVEC{4, "a"});
 
-            lai::vector<unCopyable> v1;
-            v1.emplace_back(unCopyable(new int(3)));
-            v1.emplace_back(std::make_unique<int>(3));
-            IS_TRUE(*(v1[0]) == 3);
-            IS_TRUE(*(v1[1]) == 3);
+            LAI_UVEC v1;
+            v1.emplace_back(Uncopyable());
+            IS_TRUE(v1.size() == 1);
         }
 
 
@@ -237,55 +210,14 @@ namespace UnitTest
             IS_TRUE(it == v.end());
         }
 
-        TEST_METHOD(TestResizeA)
+        TEST_METHOD(TestResize)
         {
-            // test resize()
-
-            std::initializer_list<std::string> datas = { "l", "a", "i", "s", "t", "l" };
-            LAI_SVEC v(datas);
-
-            v.resize(v.size());
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i", "s", "t", "l" });
-
-            v.resize(v.size() - 1);     // v == laist
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i", "s", "t" });
-
-            v.resize(v.size() - 2);     // v == lai
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i" });
-
-            v.resize(v.size() + 1);     // v == lai.
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i", "" });
-
-            v.resize(v.size() + 2);     // v == lai...
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i", "", "", "" });
-
-
-            lai::vector<unCopyable> v1;
-            v1.resize(10);
-            IS_TRUE(v1.size() == 10);
+            TC_Resize(lai::vector);
         }
 
-        TEST_METHOD(TestResizeB)
+        TEST_METHOD(TestResizeVal)
         {
-            // test resize( , )
-
-            std::initializer_list<std::string> datas = { "l", "a", "i", "s", "t", "l" };
-            LAI_SVEC v(datas);
-
-            v.resize(v.size(), "");
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i", "s", "t", "l" });
-
-            v.resize(v.size() - 1, "a");     // v == laist
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i", "s", "t" });
-
-            v.resize(v.size() - 2, "b");     // v == lai
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i" });
-
-            v.resize(v.size() + 1, "c");     // v == laic
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i", "c" });
-
-            v.resize(v.size() + 2, "d");     // v == laicdd
-            AssertContainerEqual(v, STD_SVEC{ "l", "a", "i", "c", "d", "d" });
+            TC_ResizeVal(lai::vector);
         }
 
 
@@ -304,7 +236,6 @@ namespace UnitTest
             it = v.emplace(v.end() - 1, 4);
             IS_TRUE(it == v.end() - 2);
             AssertContainerEqual(v, STD_IVEC{ 0,1,2,3,4,5 });
-
 
             LAI_SVEC sv{ "stl" };
 
@@ -327,21 +258,12 @@ namespace UnitTest
             AssertContainerEqual(sv, STD_SVEC{ "l", "a","i" });
 
 
-            lai::vector<unCopyable> uv;
+            LAI_UVEC uv;
             for (int i = 0; i != 100; ++i)
             {
-                uv.emplace(uv.begin(), unCopyable());
+                uv.emplace(uv.begin(), Uncopyable());
             }
-            AssertContainerEqual(uv, std::vector<unCopyable>(100));
-        }
-
-        TEST_METHOD(TestDefaultConstructor)
-        {
-            LAI_IVEC v;
-            IS_TRUE(v.begin() == v.end());
-            IS_TRUE(v.empty());
-            IS_TRUE(v.size() == 0);
-            Assert::ExpectException<std::out_of_range>([&v] { v.at(0); });
+            AssertContainerEqual(uv, STD_UVEC(100));
         }
 
         TEST_METHOD(TestInsert)
@@ -591,9 +513,3 @@ namespace UnitTest
 
     };
 }
-
-
-#undef LAI_IVEC
-#undef LAI_SVEC
-#undef STD_IVEC
-#undef STD_SVEC

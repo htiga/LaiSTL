@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <initializer_list>
+#include <iterator>
 #include <memory>
 #include <new>
 #include <stdexcept>
@@ -147,7 +148,7 @@ namespace lai
         const_reference at(size_type pos) const
         {
             checkRange(pos);
-            return *(begin() + pos);
+            return *(cbegin() + pos);
         }
 
         reference operator[](size_type pos)
@@ -189,7 +190,7 @@ namespace lai
 
         const_reference front() const
         {
-            return *(begin());
+            return *(cbegin());
         }
 
         reference back()
@@ -199,7 +200,7 @@ namespace lai
 
         const_reference back() const
         {
-            return *(end() - 1);
+            return *(cend() - 1);
         }
 
         // modifiers
@@ -323,6 +324,8 @@ namespace lai
 
         iterator insert(const_iterator pos, T && value)
         {
+            // this implementation do not allow the insertion of an existed element.
+            // reallocate may invalidate inserted value.
             return emplace(pos, std::move(value));
         }
 
@@ -331,7 +334,7 @@ namespace lai
         iterator insert(const_iterator pos, InputIt first, InputIt last)
         {
             auto offset = pos - begin();
-            size_type count = last - first;
+            size_type count = std::distance(first, last);
             if (unusedCapacity() < count)
             {
                 auto ptr = const_cast<iterator>(pos);

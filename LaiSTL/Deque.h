@@ -1,6 +1,7 @@
 #ifndef LAI_DEQUE_H
 #define LAI_DEQUE_H
 
+#include <iterator>
 #include <initializer_list>
 #include <memory>
 #include <type_traits>
@@ -109,7 +110,7 @@ namespace lai
 
         friend difference_type operator-(const DequeIterator & lhs, const DequeIterator & rhs)
         {
-            return static_cast<difference_type>(offset - rhs.offset)
+            return static_cast<difference_type>(lhs.offset - rhs.offset);
         }
 
         friend bool operator==(const DequeIterator & lhs, const DequeIterator & rhs)
@@ -166,6 +167,9 @@ namespace lai
         using const_reference = const value_type &;
         using iterator = DequeIterator<deque, reference, pointer>;
         using const_iterator = DequeIterator<deque, const_reference, const_pointer>;
+        using reverse_iterator = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
         friend iterator;
         friend const_iterator;
 
@@ -199,6 +203,46 @@ namespace lai
         deque(const deque & rhs)
         {
             constructRange(rhs.cbegin(), rhs.cend());
+        }
+
+        deque(deque && rhs) :
+            map(std::move(rhs.map)),
+            offset(std::move(rhs.offset)),
+            dequeSize(std::move(rhs.dequeSize)),
+            mapSize(std::move(rhs.mapSize))
+        {
+            rhs.map = MapPtr();
+            rhs.offset = 0;
+            rhs.dequeSize = 0;
+            rhs.mapSize = 0;
+        }
+
+        ~deque()
+        {
+            destroyAll();
+        }
+
+        deque & operator=(deque rhs)
+        {
+            swap(rhs);
+            return *this;
+        }
+
+        void assign(size_type count, const T & val)
+        {
+            swap(deque(count, val));
+        }
+
+        template<typename InputIt,
+            typename = std::enable_if_t<!std::is_integral<InputIt>::value>>
+        void assign(InputIt first, InputIt last)
+        {
+            swap(deque(first, last));
+        }
+
+        void assign(std::initializer_list<value_type> il)
+        {
+            swap(deque(il));
         }
 
         // element access
@@ -252,6 +296,117 @@ namespace lai
         }
 
         // modifiers
+
+        iterator erase(const_iterator pos)
+        {
+            return erase(pos, pos + 1);
+        }
+
+        iterator erase(const_iterator first, const_iterator last)
+        {
+            size_type count = last - first;
+            size_type steps = first - cbegin();     // number of elements to be moved to font
+            size_type movedBack = cend() - last;    // number of elements to be moved to back
+            if (steps > movedBack)
+            {
+                std::move(begin() + steps + count, end(), begin() + steps);
+                while (count-- > 0)
+                {
+                    pop_back();
+                }
+            }
+            else
+            {
+                std::move_backward(begin(), begin() + steps, begin() + steps + count);
+                while (count-- > 0)
+                {
+                    pop_front();
+                }
+            }
+            return begin() + steps;
+        }
+
+        template<typename ... Args>
+        iterator emplace(const_iterator pos, Args ... args)
+        {
+            size_type steps = pos - cbegin();
+            if (steps > size() / 2)
+            {
+                emplace_back(std::forward<Args>(args)...);
+                std::rotate(begin() + steps, end() - 1, end());
+            }
+            else
+            {
+                emplace_front(std::forward<Args>(args)...);
+                std::rotate(begin(), begin() + 1, begin() + steps + 1);
+            }
+            return begin() + steps;
+        }
+
+        iterator insert(const_iterator pos, const value_type & val)
+        {
+            return emplace(pos, val);
+        }
+
+        iterator insert(const_iterator pos, value_type && val)
+        {
+            return emplace(pos, std::move(val));
+        }
+
+        iterator insert(const_iterator pos, size_type count, const T & val)
+        {
+            size_type steps = pos - cbegin();
+            if (steps > size() / 2)
+            {
+                for (int i = 0; i != count; ++i)
+                {
+                    push_back(val);
+                }
+                std::rotate(begin() + steps, end() - count, end());
+            }
+            else
+            {
+                for (int i = 0; i != count; ++i)
+                {
+                    push_front(val);
+                }
+                std::rotate(begin(), begin() + count, begin() + count + steps);
+            }
+            return begin() + steps;
+        }
+
+        template<typename InputIt,
+            typename = std::enable_if_t<!std::is_integral<InputIt>::value>>
+        iterator insert(const_iterator pos, InputIt first, InputIt last)
+        {
+            size_type steps = pos - cbegin();
+            size_type oldSize = size();
+            if (steps > size() / 2)
+            {
+                while (first != last)
+                {
+                    push_back(*first++);
+                }
+                size_type count = size() - oldSize;
+                std::rotate(begin() + steps, end() - count, end());
+            }
+            else
+            {
+                while (first != last)
+                {
+                    push_front(*first++);
+                }
+                size_type count = size() - oldSize;
+                std::reverse(begin(), begin() + count);
+                std::rotate(begin(), begin() + count, begin() + count + steps);
+            }
+            return begin() + steps;
+        }
+
+        iterator insert(const_iterator pos, std::initializer_list<value_type> il)
+        {
+            return insert(pos, il.begin(), il.end());
+        }
 
         void pop_front()
         {
@@ -311,6 +466,15 @@ namespace lai
             ++dequeSize;
         }
 
+        void swap(deque & rhs)
+        {
+            using std::swap;
+            swap(map, rhs.map);
+            swap(offset, rhs.offset);
+            swap(mapSize, rhs.mapSize);
+            swap(dequeSize, rhs.dequeSize);
+        }
+
         // iterators
 
         iterator begin()
@@ -318,9 +482,14 @@ namespace lai
             return iterator(this, offset);
         }
 
-        const_iterator cbegin() const
+        const_iterator begin() const
         {
             return const_iterator(this, offset);
+        }
+
+        const_iterator cbegin() const
+        {
+            return begin();
         }
 
         iterator end()
@@ -328,9 +497,44 @@ namespace lai
             return iterator(this, offset + dequeSize);
         }
 
-        const_iterator cend() const
+        const_iterator end() const
         {
             return const_iterator(this, offset + dequeSize);
+        }
+
+        const_iterator cend() const
+        {
+            return end();
+        }
+
+        reverse_iterator rbegin()
+        {
+            return reverse_iterator(end());
+        }
+
+        const_reverse_iterator rbegin() const
+        {
+            return const_reverse_iterator(end());
+        }
+
+        const_reverse_iterator crbegin() const
+        {
+            return rbegin();
+        }
+
+        reverse_iterator rend()
+        {
+            return reverse_iterator(begin());
+        }
+
+        const_reverse_iterator rend() const
+        {
+            return const_reverse_iterator(begin());
+        }
+
+        const_reverse_iterator crend() const
+        {
+            return rend();
         }
 
         // Capacity operations
@@ -369,6 +573,11 @@ namespace lai
             }
         }
 
+        void clear()
+        {
+            doClear();
+        }
+
     private:
         static constexpr size_type INIT_MAP_SIZE = 1;
         static constexpr size_type BLOCK_SIZE = sizeof(value_type) <= 1 ? 16
@@ -392,6 +601,32 @@ namespace lai
         value_type * allocateBlock()
         {
             return dataAlloc.allocate(BLOCK_SIZE);
+        }
+
+        void deallocateBlock(value_type * pos)
+        {
+            dataAlloc.deallocate(pos, BLOCK_SIZE);
+        }
+
+        void destroyAll()
+        {
+            // destroy all elements
+            doClear();
+            // deallocate all blocks
+            for (size_type i = 0; i != mapSize; ++i)
+            {
+                if (map[i])
+                {
+                    deallocateBlock(map[i]);
+                }
+            }
+            // deallocate map
+            if (map)
+            {
+                deallocateMap(map, mapSize);
+            }
+            map = MapPtr();
+            mapSize = 0;
         }
 
         MapPtr allocateMap(size_type size)
@@ -497,6 +732,14 @@ namespace lai
             map = newMap;
             mapSize = newSize;
         }
+
+        void doClear()
+        {
+            while (!empty())
+            {
+                pop_back();
+            }
+        }
     };
 
     // static definitions
@@ -509,6 +752,58 @@ namespace lai
     template<typename T, typename Allocator = std::allocator<T>>
     typename deque<T, Allocator>::MapAllocator
         deque<T, Allocator>::mapAlloc;
+
+    // non-member functions
+
+    template<typename T, typename Allocator>
+    inline void swap(deque<T, Allocator>& lhs, deque<T, Allocator>& rhs)
+    {
+        lhs.swap(rhs);
+    }
+
+    template<typename T, typename Allocator>
+    inline bool operator==(const deque<T, Allocator>& lhs,
+        const deque<T, Allocator>& rhs)
+    {
+        return (lhs.size() == rhs.size()) &&
+            (std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin()));
+    }
+
+    template<typename T, typename Allocator>
+    inline bool operator!=(const deque<T, Allocator>& lhs,
+        const deque<T, Allocator>& rhs)
+    {
+        return !(lhs == rhs);
+    }
+
+    template<typename T, typename Allocator>
+    inline bool operator<(const deque<T, Allocator>& lhs,
+        const deque<T, Allocator>& rhs)
+    {
+        return std::lexicographical_compare(lhs.cbegin(), lhs.cend(),
+            rhs.cbegin(), rhs.cend());
+    }
+
+    template< typename T, typename Allocator >
+    inline bool operator<=(const deque<T, Allocator>& lhs,
+        const deque<T, Allocator>& rhs)
+    {
+        return !(rhs < lhs);
+    }
+
+    template< typename T, typename Allocator >
+    inline bool operator>(const deque<T, Allocator>& lhs,
+        const deque<T, Allocator>& rhs)
+    {
+        return !(lhs <= rhs);
+    }
+
+    template< typename T, typename Allocator >
+    bool operator>=(const deque<T, Allocator>& lhs,
+        const deque<T, Allocator>& rhs)
+    {
+        return !(lhs < rhs);
+    }
 }
 
 #endif // !LAI_DEQUE_H

@@ -3,7 +3,6 @@
 #include <crtdbg.h>
 
 #include "Deque.h"
-#include <iostream>
 int main()
 {
     {

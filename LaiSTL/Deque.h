@@ -1,5 +1,4 @@
-#ifndef LAI_DEQUE_H
-#define LAI_DEQUE_H
+#pragma once
 
 #include <iterator>
 #include <initializer_list>
@@ -805,5 +804,3 @@ namespace lai
         return !(lhs < rhs);
     }
 }
-
-#endif // !LAI_DEQUE_H

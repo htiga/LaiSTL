@@ -1,5 +1,4 @@
-#ifndef LAI_VECTOR_H
-#define LAI_VECTOR_H
+#pragma once
 
 #include <algorithm>
 #include <initializer_list>
@@ -609,6 +608,3 @@ namespace lai
         }
     }
 };
-
-#endif // !LAI_VECTOR_H
-

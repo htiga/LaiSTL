@@ -8,5 +8,3 @@
 
 // Headers for CppUnitTest
 #include "CppUnitTest.h"
-#include "CommonTestUtilities.h"
-#include <string>

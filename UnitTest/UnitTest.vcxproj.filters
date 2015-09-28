@@ -18,18 +18,15 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommonTestUtilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestVector.cpp">
+    <ClCompile Include="TestCases\TestDeque.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestDeque.cpp">
+    <ClCompile Include="TestCases\TestVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

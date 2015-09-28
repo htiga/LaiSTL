@@ -1,6 +1,5 @@
-#include "stdafx.h"
-#include "CommonTestUtilities.h"
-#include "../LaiSTL/Vector.h"
+#include "../stdafx.h"
+#include "../../LaiSTL/Vector.h"
 #include <memory>
 #include <vector>
 

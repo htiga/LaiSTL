@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "../LaiSTL/Deque.h"
+#include "../stdafx.h"
+#include "../../LaiSTL/Deque.h"
 #include <deque>
 #include <algorithm>
 #include <functional>

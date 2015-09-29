@@ -8,3 +8,11 @@
 
 // Headers for CppUnitTest
 #include "CppUnitTest.h"
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+// Utility headers for unit test
+#include <vector>
+#include <string>
+#include <initializer_list>
+#include "Utilities\Uncopyable.h"
+#include "Utilities\macros.h"

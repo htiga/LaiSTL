@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "../Utilities/TestSequenceContainer.h"
 #include "../../LaiSTL/Deque.h"
 #include <deque>
 #include <algorithm>
@@ -31,37 +30,25 @@ namespace UnitTest
             TSC_CountConstructor(lai::deque);
         }
 
-    //    TEST_METHOD(TestRangeConstructor)
-    //    {
-    //        TSC_RangeConstructor(lai::deque);
-    //    }
+        TEST_METHOD(TestRangeConstructor)
+        {
+            TSC_RangeConstructor(lai::deque);
+        }
 
-    //    TEST_METHOD(TestBracedListConstructor)
-    //    {
-    //        TSC_BracedListConstructor(lai::deque);
-    //    }
+        TEST_METHOD(TestBraceListConstructor)
+        {
+            TSC_BraceListConstructor(lai::deque);
+        }
 
-    //    TEST_METHOD(TestCopyConstructor)
-    //    {
-    //        TSC_CopyConstructor(lai::deque);
+        TEST_METHOD(TestCopyConstructor)
+        {
+            TSC_CopyConstructor(lai::deque);
+        }
 
-    //        LAI_SDEQ v{ "l", "ai", "stl" };
-    //        LAI_SDEQ v1(v);
-    //        AssertContainerEqual(v1, STD_SDEQ{ "l", "ai", "stl" });
-    //        v.~deque();
-    //        AssertContainerEqual(v1, STD_SDEQ{ "l", "ai", "stl" });
-    //    }
-
-    //    TEST_METHOD(TestMoveConstructor)
-    //    {
-    //        TSC_MoveConstructor(lai::deque);
-
-    //        LAI_SDEQ v{ "l", "ai", "stl" };
-    //        LAI_SDEQ v1(std::move(v));
-    //        AssertContainerEqual(v1, STD_SDEQ{ "l", "ai", "stl" });
-    //        v.~deque();
-    //        AssertContainerEqual(v1, STD_SDEQ{ "l", "ai", "stl" });
-    //    }
+        TEST_METHOD(TestMoveConstructor)
+        {
+            TSC_MoveConstructor(lai::deque);
+        }
 
     //    TEST_METHOD(TestAssignmentOperator)
     //    {

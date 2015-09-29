@@ -1,8 +1,5 @@
 #include "stdafx.h"
-#include "../Utilities/TestSequenceContainer.h"
 #include "../../LaiSTL/Vector.h"
-#include <memory>
-#include <vector>
 
 
 #define LAI_IVEC lai::vector<int>
@@ -19,67 +16,30 @@ namespace UnitTest
             TSC_DefaultConstructor(lai::vector);
         }
 
-        //TEST_METHOD(TestCapacityOperations)
-        //{
-        //    int size = 3;
-        //    LAI_UVEC vec(size);
-
-        //    IS_FALSE(vec.empty());
-        //    IS_TRUE(vec.size() == size);
-
-        //    vec.reserve(20);
-        //    IS_FALSE(vec.empty());
-        //    IS_TRUE(vec.size() == size);
-        //    IS_TRUE(vec.capacity() == 20);
-
-        //    vec.clear();
-        //    IS_TRUE(vec.empty());
-        //    IS_TRUE(vec.size() == 0);
-        //    IS_TRUE(vec.capacity() == 20);
-
-        //    vec.shrink_to_fit();
-        //    IS_TRUE(vec.empty());
-        //    IS_TRUE(vec.size() == 0);
-        //    IS_TRUE(vec.capacity() == 0);
-
-        //}
-
         TEST_METHOD(TestCountConstructor)
         {
             TSC_CountConstructor(lai::vector);
         }
 
-        //TEST_METHOD(TestRangeContructor)
-        //{
-        //    TSC_RangeConstructor(lai::vector);
-        //}
+        TEST_METHOD(TestRangeContructor)
+        {
+            TSC_RangeConstructor(lai::vector);
+        }
 
-        //TEST_METHOD(TestBracedListConstructor)
-        //{
-        //    TSC_BracedListConstructor(lai::vector);
-        //}
+        TEST_METHOD(TestBraceListConstructor)
+        {
+            TSC_BraceListConstructor(lai::vector);
+        }
 
-        //TEST_METHOD(TestCopyConstructor)
-        //{
-        //    TSC_CopyConstructor(lai::vector);
+        TEST_METHOD(TestCopyConstructor)
+        {
+            TSC_CopyConstructor(lai::vector);
+        }
 
-        //    LAI_SVEC v{ "l", "ai", "stl" };
-        //    LAI_SVEC v1(v);
-        //    AssertContainerEqual(v1, STD_SVEC{ "l", "ai", "stl" });
-        //    v.~vector();
-        //    AssertContainerEqual(v1, STD_SVEC{ "l", "ai", "stl" });
-        //}
-
-        //TEST_METHOD(TestMoveConstructor)
-        //{
-        //    TSC_MoveConstructor(lai::vector);
-
-        //    LAI_SVEC v{ "l", "ai", "stl" };
-        //    LAI_SVEC v1(std::move(v));
-        //    AssertContainerEqual(v1, STD_SVEC{ "l", "ai", "stl" });
-        //    v.~vector();
-        //    AssertContainerEqual(v1, STD_SVEC{ "l", "ai", "stl" });
-        //}
+        TEST_METHOD(TestMoveConstructor)
+        {
+            TSC_MoveConstructor(lai::vector);
+        }
 
         //TEST_METHOD(TestAt)
         //{
@@ -284,6 +244,31 @@ namespace UnitTest
         //{
         //    TSC_RelationalOperator(lai::vector);
         //}
+        
 
+        //TEST_METHOD(TestCapacityOperations)
+        //{
+        //    int size = 3;
+        //    LAI_UVEC vec(size);
+
+        //    IS_FALSE(vec.empty());
+        //    IS_TRUE(vec.size() == size);
+
+        //    vec.reserve(20);
+        //    IS_FALSE(vec.empty());
+        //    IS_TRUE(vec.size() == size);
+        //    IS_TRUE(vec.capacity() == 20);
+
+        //    vec.clear();
+        //    IS_TRUE(vec.empty());
+        //    IS_TRUE(vec.size() == 0);
+        //    IS_TRUE(vec.capacity() == 20);
+
+        //    vec.shrink_to_fit();
+        //    IS_TRUE(vec.empty());
+        //    IS_TRUE(vec.size() == 0);
+        //    IS_TRUE(vec.capacity() == 0);
+
+        //}
     };
 }

@@ -167,9 +167,14 @@ namespace lai
             return dataBegin;
         }
 
-        const_iterator cbegin() const noexcept
+        const_iterator begin() const noexcept
         {
             return dataBegin;
+        }
+
+        const_iterator cbegin() const noexcept
+        {
+            return begin();
         }
 
         iterator end() noexcept
@@ -177,9 +182,14 @@ namespace lai
             return dataEnd;
         }
 
-        const_iterator cend() const noexcept
+        const_iterator end() const noexcept
         {
             return dataEnd;
+        }
+
+        const_iterator cend() const noexcept
+        {
+            return end();
         }
 
         reference front()

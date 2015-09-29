@@ -16,3 +16,4 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #include <initializer_list>
 #include "Utilities\Uncopyable.h"
 #include "Utilities\macros.h"
+#include "Utilities\TestSequenceContainer.h"

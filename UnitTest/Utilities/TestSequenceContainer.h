@@ -170,3 +170,5 @@ do { \
     ContainerTemplate<Uncopyable> moved(std::move(c)); \
     AssertContainerEqual(moved, STD_UVEC(10)); \
 } while (false)
+
+

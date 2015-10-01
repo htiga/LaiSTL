@@ -50,20 +50,20 @@ namespace UnitTest
             TSC_MoveConstructor(lai::deque);
         }
 
-    //    TEST_METHOD(TestAssignmentOperator)
-    //    {
-    //        TSC_AssignmentOperator(lai::deque);
-    //    }
+        TEST_METHOD(TestCopyAssignmentOperator)
+        {
+            TSC_CopyAssignmentOperator(lai::deque);
+        }
 
-    //    TEST_METHOD(TestMoveAssignmentOperator)
-    //    {
-    //        TSC_MoveAssignmentOperator(lai::deque);
-    //    }
+        TEST_METHOD(TestMoveAssignmentOperator)
+        {
+            TSC_MoveAssignmentOperator(lai::deque);
+        }
 
-    //    TEST_METHOD(TestAssignmentOperatorInitList)
-    //    {
-    //        TSC_AssignmentOperatorInitList(lai::deque);
-    //    }
+        TEST_METHOD(TestAssignmentOperatorInitList)
+        {
+            TSC_AssignmentOperatorInitList(lai::deque);
+        }
 
     //    TEST_METHOD(TestAssignCount)
     //    {

@@ -9,6 +9,6 @@ void AssertContainerEqual(const Container1 & tested, const Container2 & expected
     auto iter2 = expected.begin();
     while (iter1 != tested.end())
     {
-        IS_TRUE(std::equal_to<>(*iter1++, *iter2++));
+        IS_TRUE(*iter1++ == *iter2++);
     }
 }

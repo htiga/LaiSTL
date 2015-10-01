@@ -41,6 +41,21 @@ namespace UnitTest
             TSC_MoveConstructor(lai::vector);
         }
 
+        TEST_METHOD(CopyAssignmentOperator)
+        {
+            TSC_CopyAssignmentOperator(lai::vector);
+        }
+
+        TEST_METHOD(TestMoveAssignmentOperator)
+        {
+            TSC_MoveAssignmentOperator(lai::vector);
+        }
+
+        TEST_METHOD(TestAssignmentOperatorInitList)
+        {
+            TSC_AssignmentOperatorInitList(lai::vector);
+        }
+
         //TEST_METHOD(TestAt)
         //{
         //    TSC_At(lai::vector);
@@ -121,21 +136,6 @@ namespace UnitTest
         //    TSC_PopBack(lai::vector, std::vector);
         //}
 
-
-        //TEST_METHOD(TestAssignmentOperator)
-        //{
-        //    TSC_AssignmentOperator(lai::vector);
-        //}
-
-        //TEST_METHOD(TestMoveAssignmentOperator)
-        //{
-        //    TSC_MoveAssignmentOperator(lai::vector);
-        //}
-
-        //TEST_METHOD(TestAssignmentOperatorInitList)
-        //{
-        //    TSC_AssignmentOperatorInitList(lai::vector);
-        //}
 
         //TEST_METHOD(TestErase)
         //{

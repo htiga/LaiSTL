@@ -279,3 +279,88 @@ do { \
     };                                                      \
     TSC_AssignmentOperatorInitListAux< ContainerTemplate<std::string> >(strData); \
 } while (false)
+
+
+// ---- Test for member assign ----
+
+template<typename Container, typename DataSet>
+void TSC_AssignCountAux(const DataSet & dataset)
+{
+    I_IL cases = { 0,1,2,10 };
+    for (const auto & data : dataset)
+    {
+        for (const auto & count: cases)
+        {
+            Container c;
+            c.assign(count, data);
+            IS_TRUE(c.size() == count);
+            AssertContainerFillWith(c, data);
+        }
+    }
+}
+
+
+#define TSC_AssignCount(ContainerTemplate) \
+do { \
+    I_IL intData = { 0, 1, -1, 10 }; \
+    TSC_AssignCountAux< ContainerTemplate<int> >(intData); \
+\
+    S_IL strData = {"", "b", "c", "dd", "eee", "ffff"}; \
+    TSC_AssignCountAux< ContainerTemplate<std::string> >(strData); \
+} while (false)
+
+
+template<typename Container, typename DataSet>
+void TSC_AssignRangeAux(const DataSet & dataset)
+{
+    for (const auto & data : dataset)
+    {
+        Container c;
+        c.assign(data.begin(), data.end());
+        AssertContainerEqual(c, data);
+    }
+}
+
+
+#define TSC_AssignRange(ContainerTemplate) \
+do { \
+    std::initializer_list<I_IL> intData = \
+    {                                     \
+        {}, {1}, {1, 2}, {1,2,3,4,5,6,7,8,9} \
+    };                                      \
+    TSC_AssignRangeAux< ContainerTemplate<int> >(intData); \
+\
+    std::initializer_list<S_IL> strData =                   \
+    {                                                       \
+        {}, {"laistl"}, {"lai", "stl"}, {"a", "b", "c", "dd", "eee", "fff"} \
+    };                                                      \
+    TSC_AssignRangeAux< ContainerTemplate<std::string> >(strData); \
+} while (false)
+
+
+template<typename Container, typename DataSet>
+void TSC_AssignInitListAux(const DataSet & dataset)
+{
+    for (const auto & data : dataset)
+    {
+        Container c;
+        c.assign(data);
+        AssertContainerEqual(c, data);
+    }
+}
+
+
+#define TSC_AssignInitList(ContainerTemplate) \
+do { \
+    std::initializer_list<I_IL> intData = \
+    {                                     \
+        {}, {1}, {1, 2}, {1,2,3,4,5,6,7,8,9} \
+    };                                      \
+    TSC_AssignInitListAux< ContainerTemplate<int> >(intData); \
+\
+    std::initializer_list<S_IL> strData =                   \
+    {                                                       \
+        {}, {"laistl"}, {"lai", "stl"}, {"a", "b", "c", "dd", "eee", "fff"} \
+    };                                                      \
+    TSC_AssignInitListAux< ContainerTemplate<std::string> >(strData); \
+} while (false)

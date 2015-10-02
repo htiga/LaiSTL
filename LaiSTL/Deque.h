@@ -218,12 +218,27 @@ namespace lai
 
         ~deque()
         {
-            destroyAll();
+            deallocateAll();
         }
 
-        deque & operator=(deque rhs)
+        deque & operator=(const deque & rhs)
         {
-            swap(rhs);
+            deque copied(rhs);
+            swap(copied);
+            return *this;
+        }
+
+        deque & operator=(deque && rhs)
+        {
+            deque moveCopied(std::move(rhs));
+            swap(moveCopied);
+            return *this;
+        }
+
+        deque & operator=(std::initializer_list<value_type> il)
+        {
+            deque copied(il.begin(), il.end());
+            swap(copied);
             return *this;
         }
 
@@ -607,7 +622,7 @@ namespace lai
             dataAlloc.deallocate(pos, BLOCK_SIZE);
         }
 
-        void destroyAll()
+        void deallocateAll()
         {
             // destroy all elements
             doClear();

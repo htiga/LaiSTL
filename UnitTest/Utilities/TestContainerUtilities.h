@@ -12,3 +12,14 @@ void AssertContainerEqual(const Container1 & tested, const Container2 & expected
         IS_TRUE(*iter1++ == *iter2++);
     }
 }
+
+
+template<typename Container, typename ValueType>
+void AssertContainerFillWith(const Container & c, const ValueType & val)
+{
+    auto iter = c.begin();
+    while (iter != c.end())
+    {
+        IS_TRUE(*iter++ == val);
+    }
+}

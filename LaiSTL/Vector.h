@@ -69,9 +69,24 @@ namespace lai
             rhs.storageEnd = nullptr;
         }
 
-        vector & operator=(vector rhs)
+        vector & operator=(const vector & rhs)
         {
-            swap(rhs);
+            vector copied(rhs);
+            swap(copied);
+            return *this;
+        }
+
+        vector & operator=(vector && rhs)
+        {
+            vector moveCopied(std::move(rhs));
+            swap(moveCopied);
+            return *this;
+        }
+
+        vector & operator=(std::initializer_list<value_type> il)
+        {
+            vector copied(il.begin(), il.end());
+            swap(copied);
             return *this;
         }
 

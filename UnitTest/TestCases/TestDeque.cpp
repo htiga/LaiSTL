@@ -65,25 +65,25 @@ namespace UnitTest
             TSC_AssignmentOperatorInitList(lai::deque);
         }
 
-    //    TEST_METHOD(TestAssignCount)
-    //    {
-    //        TSC_AssignCount(lai::deque);
-    //    }
+        TEST_METHOD(TestAssignCount)
+        {
+            TSC_AssignCount(lai::deque);
+        }
 
-    //    TEST_METHOD(TestAssignRange)
-    //    {
-    //        TSC_AssignRange(lai::deque);
-    //    }
+        TEST_METHOD(TestAssignRange)
+        {
+            TSC_AssignRange(lai::deque);
+        }
 
-    //    TEST_METHOD(TestAssignInitList)
-    //    {
-    //        TSC_AssignInitList(lai::deque);
-    //    }
+        TEST_METHOD(TestAssignInitList)
+        {
+            TSC_AssignInitList(lai::deque);
+        }
 
-    //    TEST_METHOD(TestAt)
-    //    {
-    //        TSC_At(lai::deque);
-    //    }
+        TEST_METHOD(TestAt)
+        {
+            TSC_At(lai::deque);
+        }
 
     //    TEST_METHOD(TestSubscript)
     //    {

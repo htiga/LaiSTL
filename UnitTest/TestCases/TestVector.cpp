@@ -56,10 +56,25 @@ namespace UnitTest
             TSC_AssignmentOperatorInitList(lai::vector);
         }
 
-        //TEST_METHOD(TestAt)
-        //{
-        //    TSC_At(lai::vector);
-        //}
+        TEST_METHOD(TestAssignCount)
+        {
+            TSC_AssignCount(lai::vector);
+        }
+
+        TEST_METHOD(TestAssignRange)
+        {
+            TSC_AssignRange(lai::vector);
+        }
+
+        TEST_METHOD(TestAssignInitList)
+        {
+            TSC_AssignInitList(lai::vector);
+        }
+
+        TEST_METHOD(TestAt)
+        {
+            TSC_At(lai::vector);
+        }
 
         //TEST_METHOD(TestSubscript)
         //{
@@ -223,21 +238,6 @@ namespace UnitTest
         //{
         //    TSC_Swap(lai::vector);
         //    TSC_NonmemberSwap(lai::vector, lai::swap);
-        //}
-
-        //TEST_METHOD(TestAssignCount)
-        //{
-        //    TSC_AssignCount(lai::vector);
-        //}
-
-        //TEST_METHOD(TestAssignRange)
-        //{
-        //    TSC_AssignRange(lai::vector);
-        //}
-
-        //TEST_METHOD(TestAssignInitList)
-        //{
-        //    TSC_AssignInitList(lai::vector);
         //}
 
         //TEST_METHOD(TestRelationalOperators)

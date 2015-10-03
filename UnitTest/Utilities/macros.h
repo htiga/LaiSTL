@@ -9,6 +9,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #define IS_TRUE Assert::IsTrue
 #define IS_FALSE Assert::IsFalse
+#define EXPECT_EXPCETION Assert::ExpectException
 
 #define STD_IVEC std::vector<int>
 #define STD_SVEC std::vector<std::string>

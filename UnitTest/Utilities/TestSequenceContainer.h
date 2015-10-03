@@ -391,5 +391,24 @@ do { \
         c1.at(i) = j;                           \
         IS_TRUE(c1.at(i) == j);                 \
     }                                           \
-} while (false) // todo
+} while (false)
+
+
+// ---- Test for subscript operator ----
+
+#define TSC_Subscript(ContainerTemplate) \
+do { \
+    I_IL data = {0,1,2,3,4,5}; \
+    ContainerTemplate<int> c(data); \
+    const ContainerTemplate<int> constC(data); \
+    for (const auto & i : data)                \
+    {                                          \
+        IS_TRUE(c[i] == i);                    \
+        IS_TRUE(constC[i] == i);               \
+                                               \
+        int j = i + 10;                        \
+        c[i] = j;                              \
+        IS_TRUE(c[i] == j);                    \
+    }                                          \
+} while (false)
 

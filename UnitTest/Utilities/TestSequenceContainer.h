@@ -412,3 +412,40 @@ do { \
     }                                          \
 } while (false)
 
+
+// ---- Test for front and back ----
+
+#define TSC_Front(ContainerTemplate) \
+do { \
+    I_IL data = {0,1,2,3,4,5}; \
+    ContainerTemplate<int> c(data); \
+    const ContainerTemplate<int> constC(data); \
+\
+    IS_TRUE(c.front() == 0); \
+    IS_TRUE(constC.front() == 0); \
+\
+    for (const auto & i : data) \
+    {                           \
+        int j = i + 10;         \
+        c.front() = j;          \
+        IS_TRUE(c.front() == j);\
+    }                           \
+} while (false)
+
+
+#define TSC_Back(ContainerTemplate) \
+do { \
+    I_IL data = {0,1,2,3,4,5}; \
+    ContainerTemplate<int> c(data); \
+    const ContainerTemplate<int> constC(data); \
+\
+    IS_TRUE(c.back() == 5); \
+    IS_TRUE(constC.back() == 5); \
+\
+    for (const auto & i : data) \
+    {                           \
+        int j = i + 10;         \
+        c.back() = j;           \
+        IS_TRUE(c.back() == j); \
+    }                           \
+} while (false)

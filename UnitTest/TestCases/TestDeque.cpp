@@ -85,10 +85,10 @@ namespace UnitTest
             TSC_At(lai::deque);
         }
 
-    //    TEST_METHOD(TestSubscript)
-    //    {
-    //        TSC_Subscript(lai::deque);
-    //    }
+        TEST_METHOD(TestSubscript)
+        {
+            TSC_Subscript(lai::deque);
+        }
 
     //    // operation must insert an element at the end of the container
     //    template<typename Container, typename PtrContainer>

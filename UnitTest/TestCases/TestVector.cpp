@@ -81,6 +81,16 @@ namespace UnitTest
             TSC_Subscript(lai::vector);
         }
 
+        TEST_METHOD(TestFront)
+        {
+            TSC_Front(lai::vector);
+        }
+
+        TEST_METHOD(TestBack)
+        {
+            TSC_Back(lai::vector);
+        }
+
         //TEST_METHOD(TestPushBack)
         //{
         //    TSC_PushBack(lai::vector);

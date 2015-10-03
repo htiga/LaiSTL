@@ -90,6 +90,16 @@ namespace UnitTest
             TSC_Subscript(lai::deque);
         }
 
+        TEST_METHOD(TestFront)
+        {
+            TSC_Front(lai::deque);
+        }
+
+        TEST_METHOD(TestBack)
+        {
+            TSC_Back(lai::deque);
+        }
+
     //    // operation must insert an element at the end of the container
     //    template<typename Container, typename PtrContainer>
     //    void isBackOperationInvalidPtrs(std::function<void(Container & c)> operation,

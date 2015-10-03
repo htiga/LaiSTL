@@ -364,3 +364,32 @@ do { \
     };                                                      \
     TSC_AssignInitListAux< ContainerTemplate<std::string> >(strData); \
 } while (false)
+
+
+// ---- Test for member at ----
+
+#define TSC_At(ContainerTemplate) \
+do { \
+    I_IL cases = {0, 1, -1, 10, -10}; \
+    ContainerTemplate<int> c; \
+    const ContainerTemplate<int> constC; \
+    for (const auto & i : cases)                                      \
+    {                                                                 \
+        EXPECT_EXPCETION<std::out_of_range>( [&](){ c.at(i); });      \
+        EXPECT_EXPCETION<std::out_of_range>( [&](){ constC.at(i); }); \
+    }                                                                 \
+\
+    I_IL data = {0,1,2,3,4,5}; \
+    ContainerTemplate<int> c1(data); \
+    const ContainerTemplate<int> constC1(data); \
+    for (const auto & i : data)                 \
+    {                                           \
+        IS_TRUE(c1.at(i) == i);                 \
+        IS_TRUE(constC1.at(i) == i);            \
+                                                \
+        int j = i + 1;                          \
+        c1.at(i) = j;                           \
+        IS_TRUE(c1.at(i) == j);                 \
+    }                                           \
+} while (false) // todo
+

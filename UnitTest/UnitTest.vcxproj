@@ -157,6 +157,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Utilities\macros.h" />
     <ClInclude Include="Utilities\TestContainerUtilities.h" />
+    <ClInclude Include="Utilities\TestIterator.h" />
     <ClInclude Include="Utilities\TestSequenceContainer.h" />
     <ClInclude Include="Utilities\Uncopyable.h" />
   </ItemGroup>

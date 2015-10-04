@@ -18,3 +18,4 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #include "Utilities\macros.h"
 #include "Utilities\TestContainerUtilities.h"
 #include "Utilities\TestSequenceContainer.h"
+#include "Utilities\TestIterator.h"

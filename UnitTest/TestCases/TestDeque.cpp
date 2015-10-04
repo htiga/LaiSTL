@@ -15,6 +15,14 @@ namespace UnitTest
 {
     TEST_CLASS(TestDequeIterator)
     {
+        TEST_METHOD(TestCategory)
+        {
+            IS_TRUE(IteratorCategoryTraits<LAI_IDEQ::iterator>::isRandomAccess);
+            IS_TRUE(IteratorCategoryTraits<LAI_IDEQ::const_iterator>::isRandomAccess);
+            IS_TRUE(IteratorCategoryTraits<LAI_IDEQ::reverse_iterator>::isRandomAccess);
+            IS_TRUE(IteratorCategoryTraits<LAI_IDEQ::const_reverse_iterator>::isRandomAccess);
+        }
+
         // todo
     };
 

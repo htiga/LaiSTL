@@ -8,6 +8,19 @@
 
 namespace UnitTest
 {
+    TEST_CLASS(TestVectorIterator)
+    {
+        TEST_METHOD(TestCategory)
+        {
+            IS_TRUE(IteratorCategoryTraits<LAI_IVEC::iterator>::isRandomAccess);
+            IS_TRUE(IteratorCategoryTraits<LAI_IVEC::const_iterator>::isRandomAccess);
+            IS_TRUE(IteratorCategoryTraits<LAI_IVEC::reverse_iterator>::isRandomAccess);
+            IS_TRUE(IteratorCategoryTraits<LAI_IVEC::const_reverse_iterator>::isRandomAccess);
+        }
+
+        // todo
+    };
+
     TEST_CLASS(TestVector)
     {
     public:

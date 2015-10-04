@@ -25,6 +25,8 @@ namespace lai
         using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
         using iterator = typename std::allocator_traits<Allocator>::pointer;;
         using const_iterator = typename std::allocator_traits<Allocator>::const_pointer;
+        using reverse_iterator = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     public:
 
@@ -205,6 +207,36 @@ namespace lai
         const_iterator cend() const noexcept
         {
             return end();
+        }
+
+        reverse_iterator rbegin()
+        {
+            return reverse_iterator(end());
+        }
+
+        const_reverse_iterator rbegin() const
+        {
+            return const_reverse_iterator(end());
+        }
+
+        const_reverse_iterator crbegin() const
+        {
+            return rbegin();
+        }
+
+        reverse_iterator rend()
+        {
+            return reverse_iterator(begin());
+        }
+
+        const_reverse_iterator rend() const
+        {
+            return const_reverse_iterator(begin());
+        }
+
+        const_reverse_iterator crend() const
+        {
+            return rend();
         }
 
         reference front()

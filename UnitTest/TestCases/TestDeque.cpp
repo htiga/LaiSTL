@@ -108,6 +108,19 @@ namespace UnitTest
             TSC_Back(lai::deque);
         }
 
+        TEST_METHOD(TestCapacityOperations)
+        {
+            LAI_IDEQ iDeq;
+            iDeq.clear();
+            IS_TRUE(iDeq.empty());
+            IS_TRUE(iDeq.size() == 0);
+
+            LAI_SDEQ sDeq(10);
+            sDeq.clear();
+            IS_TRUE(sDeq.empty());
+            IS_TRUE(iDeq.size() == 0);
+        }
+
     //    // operation must insert an element at the end of the container
     //    template<typename Container, typename PtrContainer>
     //    void isBackOperationInvalidPtrs(std::function<void(Container & c)> operation,
@@ -341,17 +354,6 @@ namespace UnitTest
     //    TEST_METHOD(TestResizeVal)
     //    {
     //        TSC_ResizeVal(lai::deque);
-    //    }
-
-    //    TEST_METHOD(TestClear)
-    //    {
-    //        LAI_IDEQ iDeq;
-    //        iDeq.clear();
-    //        IS_TRUE(iDeq.empty());
-
-    //        LAI_SDEQ sDeq(10);
-    //        sDeq.clear();
-    //        IS_TRUE(sDeq.empty());
     //    }
 
     //    TEST_METHOD(TestRelationalOperators)

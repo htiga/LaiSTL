@@ -104,6 +104,30 @@ namespace UnitTest
             TSC_Back(lai::vector);
         }
 
+        TEST_METHOD(TestCapacityOperations)
+        {
+            int size = 3;
+            LAI_UVEC vec(size);
+
+            IS_FALSE(vec.empty());
+            IS_TRUE(vec.size() == size);
+
+            vec.reserve(20);
+            IS_FALSE(vec.empty());
+            IS_TRUE(vec.size() == size);
+            IS_TRUE(vec.capacity() == 20);
+
+            vec.clear();
+            IS_TRUE(vec.empty());
+            IS_TRUE(vec.size() == 0);
+            IS_TRUE(vec.capacity() == 20);
+
+            vec.shrink_to_fit();
+            IS_TRUE(vec.empty());
+            IS_TRUE(vec.size() == 0);
+            IS_TRUE(vec.capacity() == 0);
+        }
+
         //TEST_METHOD(TestPushBack)
         //{
         //    TSC_PushBack(lai::vector);
@@ -266,32 +290,6 @@ namespace UnitTest
         //TEST_METHOD(TestRelationalOperators)
         //{
         //    TSC_RelationalOperator(lai::vector);
-        //}
-        
-
-        //TEST_METHOD(TestCapacityOperations)
-        //{
-        //    int size = 3;
-        //    LAI_UVEC vec(size);
-
-        //    IS_FALSE(vec.empty());
-        //    IS_TRUE(vec.size() == size);
-
-        //    vec.reserve(20);
-        //    IS_FALSE(vec.empty());
-        //    IS_TRUE(vec.size() == size);
-        //    IS_TRUE(vec.capacity() == 20);
-
-        //    vec.clear();
-        //    IS_TRUE(vec.empty());
-        //    IS_TRUE(vec.size() == 0);
-        //    IS_TRUE(vec.capacity() == 20);
-
-        //    vec.shrink_to_fit();
-        //    IS_TRUE(vec.empty());
-        //    IS_TRUE(vec.size() == 0);
-        //    IS_TRUE(vec.capacity() == 0);
-
         //}
     };
 }

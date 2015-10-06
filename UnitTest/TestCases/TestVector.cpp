@@ -128,6 +128,25 @@ namespace UnitTest
             IS_TRUE(vec.capacity() == 0);
         }
 
+        TEST_METHOD(TestInsertLvalue)
+        {
+            TSC_InsertLvalue(lai::vector);
+            
+            // test insert an exited element
+
+            LAI_SVEC svec{ "a" };
+            for (int i = 0; i != 20; ++i)
+            {
+                svec.insert(svec.begin(), svec[0]);
+            }
+            AssertContainerEqual(svec, STD_SVEC{ 21, "a" });
+        }
+
+        TEST_METHOD(TestInsertRvalue)
+        {
+            TSC_InsertRvalue(lai::vector);
+        }
+
         //TEST_METHOD(TestPushBack)
         //{
         //    TSC_PushBack(lai::vector);
@@ -223,17 +242,6 @@ namespace UnitTest
         //TEST_METHOD(TestEmplace)
         //{
         //    TSC_Emplace(lai::vector);
-        //}
-
-        //TEST_METHOD(TestInsert)
-        //{
-        //    TSC_Insert(lai::vector);
-        //    
-        //    // test : insert an exited element
-        //    LAI_SVEC ss{ "a" };
-        //    for (int i = 0; i != 20; ++i)
-        //        ss.insert(ss.begin(), ss[0]);
-        //    AssertContainerEqual(ss, STD_SVEC{ 21, "a" });
         //}
 
         //TEST_METHOD(TestInsertCount)

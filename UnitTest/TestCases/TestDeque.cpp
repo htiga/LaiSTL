@@ -121,45 +121,90 @@ namespace UnitTest
             IS_TRUE(iDeq.size() == 0);
         }
 
-    //    // operation must insert an element at the end of the container
-    //    template<typename Container, typename PtrContainer>
-    //    void isBackOperationInvalidPtrs(std::function<void(Container & c)> operation,
-    //        const int performedTimes = 100)
-    //    {
-    //        Container container;
-    //        PtrContainer ptrs;
-    //        for (int i = 0; i != performedTimes; ++i)
-    //        {
-    //            operation(container);
-    //            ptrs.push_back(&container[i]);
-    //        }
-    //        operation(container);
+            // operation must insert an element at the end of the container
+            template<typename Container, typename PtrContainer>
+            void isBackOperationInvalidPtrs(std::function<void(Container & c)> operation,
+                const int performedTimes = 100)
+            {
+                Container container;
+                PtrContainer ptrs;
+                for (int i = 0; i != performedTimes; ++i)
+                {
+                    operation(container);
+                    ptrs.push_back(&container[i]);
+                }
+                operation(container);
 
-    //        for (int i = 0; i != performedTimes; ++i)
-    //        {
-    //            IS_TRUE(*ptrs[i] == container[i]);
-    //        }
-    //    }
+                for (int i = 0; i != performedTimes; ++i)
+                {
+                    IS_TRUE(*ptrs[i] == container[i]);
+                }
+            }
 
-    //    // operation must insert an element at the begin of the container
-    //    template<typename Container, typename PtrContainer>
-    //    void isFrontOperationInvalidatePtrs(std::function<void(Container & c)> operation,
-    //        const int performedTimes = 100)
-    //    {
-    //        Container container;
-    //        PtrContainer ptrs;
-    //        for (int i = 0; i != performedTimes; ++i)
-    //        {
-    //            operation(container);
-    //            ptrs.push_front(&container[i]);
-    //        }
-    //        operation(container);
+            // operation must insert an element at the begin of the container
+            template<typename Container, typename PtrContainer>
+            void isFrontOperationInvalidatePtrs(std::function<void(Container & c)> operation,
+                const int performedTimes = 100)
+            {
+                Container container;
+                PtrContainer ptrs;
+                for (int i = 0; i != performedTimes; ++i)
+                {
+                    operation(container);
+                    ptrs.push_front(&container[i]);
+                }
+                operation(container);
 
-    //        for (int i = 0; i != performedTimes; ++i)
-    //        {
-    //            IS_TRUE(*ptrs[i] == container[i + 1]);
-    //        }
-    //    }
+                for (int i = 0; i != performedTimes; ++i)
+                {
+                    IS_TRUE(*ptrs[i] == container[i + 1]);
+                }
+            }
+
+            TEST_METHOD(TestInsertLvalue)
+            {
+                TSC_InsertLvalue(lai::deque);
+
+
+                // test if insert begin() or end() invalidate pointers.
+
+                using PtrContainer = std::deque<LAI_SDEQ::pointer>;
+
+                auto insertEnd = [](LAI_SDEQ & c)
+                {
+                    std::string i = "lai";
+                    c.insert(c.end(), i);
+                };
+                isBackOperationInvalidPtrs<LAI_SDEQ, PtrContainer>(insertEnd, 10);
+
+                auto insertBegin = [](LAI_SDEQ & c)
+                {
+                    std::string i = "lai";
+                    c.insert(c.begin(), i);
+                };
+                isFrontOperationInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertBegin, 10);
+            }
+
+            TEST_METHOD(TestInsertRvalue)
+            {
+                TSC_InsertRvalue(lai::deque);
+
+                // test if insert begin() or end() invalidate pointers.
+
+                using PtrContainer = std::deque<LAI_UDEQ::pointer>;
+
+                auto insertEnd = [](LAI_UDEQ & c)
+                {
+                    c.insert(c.end(), Uncopyable(42));
+                };
+                isBackOperationInvalidPtrs<LAI_UDEQ, PtrContainer>(insertEnd, 10);
+
+                auto insertBegin = [](LAI_UDEQ & c)
+                {
+                    c.insert(c.begin(), Uncopyable(42));
+                };
+                isFrontOperationInvalidatePtrs<LAI_UDEQ, PtrContainer>(insertBegin, 10);
+            }
 
     //    TEST_METHOD(TestErase)
     //    {
@@ -180,23 +225,6 @@ namespace UnitTest
     //            [](LAI_UDEQ & c) { c.emplace(c.end(), Uncopyable(42)); }, 20);
     //        isFrontOperationInvalidatePtrs<LAI_UDEQ, PtrContainer>(
     //            [](LAI_UDEQ & c) { c.emplace(c.begin(), Uncopyable(41)); }, 20);
-    //    }
-
-    //    TEST_METHOD(TestInsert)
-    //    {
-    //        TSC_Insert(lai::deque);
-
-    //        using PtrContainer = std::deque<LAI_UDEQ::pointer>;
-    //        isBackOperationInvalidPtrs<LAI_UDEQ, PtrContainer>(
-    //            [](LAI_UDEQ & c) { c.insert(c.end(), Uncopyable(42)); }, 20);
-    //        isFrontOperationInvalidatePtrs<LAI_UDEQ, PtrContainer>(
-    //            [](LAI_UDEQ & c) { c.insert(c.begin(), Uncopyable(41)); }, 20);
-
-    //        using PtrContainer1 = std::deque<LAI_IDEQ::pointer>;
-    //        isBackOperationInvalidPtrs<LAI_IDEQ, PtrContainer1>(
-    //            [](LAI_IDEQ & c) { int i = 42; c.insert(c.end(), i); }, 20);
-    //        isFrontOperationInvalidatePtrs<LAI_IDEQ, PtrContainer1>(
-    //            [](LAI_IDEQ & c) { int i = 42; c.insert(c.begin(), i); }, 20);
     //    }
 
     //    TEST_METHOD(TestInsertCount)

@@ -449,3 +449,88 @@ do { \
         IS_TRUE(c.back() == j); \
     }                           \
 } while (false)
+
+
+// ---- Test for insert ----
+
+template<typename Container, typename DataSet>
+void TSC_InsertLvalueAux(const DataSet & dataset)
+{
+    Container c, c1;
+
+    int i = 0;
+    for (const auto & val : dataset)
+    {
+        auto iter = c.insert(c.begin() + i, val);
+        IS_TRUE(iter == c.begin() + i);
+        IS_TRUE(*iter == val);
+
+        auto iter1 = c1.insert(c1.end() - i, val);
+        IS_TRUE(iter1 == (c1.end() - (i + 1)));
+        IS_TRUE(*iter1 == val);
+
+        i += 1;
+    }
+}
+
+
+#define TSC_InsertLvalue(ContainerTemplate) \
+do { \
+    I_IL intData = {9, 8, 6, 5, 4, 2, 1, 0}; \
+    TSC_InsertLvalueAux< ContainerTemplate<int> >(intData); \
+\
+    S_IL strData = { "a", "bc", "def", "ghij", ""}; \
+    TSC_InsertLvalueAux< ContainerTemplate<std::string> >(strData); \
+} while (false)
+
+
+// Elements in DataSet must be copyable as well as moveable.
+template<typename Container, typename DataSet>
+void TSC_InsertRvalueAux(DataSet & dataset)
+{
+    Container c, c1;
+    DataSet data = dataset;
+    DataSet data1 = dataset;
+
+    DataSet::iterator valIt = data.begin();
+    DataSet::iterator valIt1 = data1.begin();
+    DataSet::iterator expectIt = dataset.begin();
+    int i = 0;
+    while (expectIt != dataset.end())
+    {
+        auto iter = c.insert(c.begin() + i, std::move(*valIt));
+        IS_TRUE(iter == c.begin() + i);
+        IS_TRUE(*iter == *expectIt);
+
+        auto iter1 = c1.insert(c1.end() - i, std::move(*valIt1));
+        IS_TRUE(iter1 == (c1.end() - (i + 1)));
+        IS_TRUE(*iter1 == *expectIt);
+
+        ++valIt;
+        ++valIt1;
+        ++expectIt;
+        ++i;
+    }
+}
+
+
+#define TSC_InsertRvalue(ContainerTemplate) \
+do { \
+    STD_IVEC intData = {9, 8, 6, 5, 4, 2, 1, 0}; \
+    TSC_InsertRvalueAux< ContainerTemplate<int> >(intData); \
+\
+    STD_SVEC strData = { "a", "bc", "def", "ghij", ""}; \
+    TSC_InsertRvalueAux< ContainerTemplate<std::string> >(strData); \
+\
+    ContainerTemplate<Uncopyable> c, c1; \
+    for (int i = 0; i != 10; ++i) \
+    { \
+        auto iter = c.insert(c.begin() + i, Uncopyable(i)); \
+        IS_TRUE(iter == c.begin() + i); \
+        IS_TRUE(*iter == Uncopyable(i)); \
+\
+        auto iter1 = c1.insert(c1.end() - i, Uncopyable(i)); \
+        IS_TRUE(iter1 == (c1.end() - (i + 1))); \
+        IS_TRUE(*iter1 == Uncopyable(i)); \
+    } \
+} while (false)

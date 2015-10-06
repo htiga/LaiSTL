@@ -534,3 +534,160 @@ do { \
         IS_TRUE(*iter1 == Uncopyable(i)); \
     } \
 } while (false)
+
+
+template<typename Container, typename ValueType>
+void TSC_InsertCountAux(const ValueType & val, const std::size_t count)
+{
+    I_IL il = { 0, 1, 3 };
+    int minSize = 4;
+    Container c(minSize), c1(minSize);
+    std::vector<ValueType> stdC(minSize), stdC1(minSize);
+
+    for (const auto & i : il)
+    {
+        auto iter = c.insert(c.begin() + i, count, val);
+        IS_TRUE(iter == c.begin() + i);
+
+        stdC.insert(stdC.begin() + i, count, val);
+        AssertContainerEqual(c, stdC);
+
+
+        auto iter1 = c1.insert(c1.end() - i, count, val);
+        IS_TRUE(iter1 == (c1.end() - count - i));
+
+        stdC1.insert(stdC1.end() - i, count, val);
+        AssertContainerEqual(c1, stdC1);
+    }
+}
+
+
+#define TSC_InsertCount(ContainerTemplate) \
+do { \
+    I_IL counts = { 0, 1, 5 }; \
+\
+    I_IL intData = { 0, 1, 2, 3}; \
+    for (const auto & val : intData) \
+        for (const auto & count : counts) \
+            TSC_InsertCountAux< ContainerTemplate<int> >(val, count); \
+\
+    S_IL strData = {"", "a", "bc", "def"}; \
+    for (const auto & val : strData) \
+        for (const auto & count : counts) \
+            TSC_InsertCountAux< ContainerTemplate<std::string> >(val, count); \
+} while (false)
+
+
+template<typename Container, typename DataSet>
+void TSC_InsertRangeAux(const DataSet & dataset, const int offset)
+{
+    // test at begin()
+
+    Container c;
+    std::vector<typename Container::value_type> stdC;
+
+    auto iter = c.insert(c.begin(), dataset.begin(), dataset.begin());
+    IS_TRUE(iter == c.begin());
+    stdC.insert(stdC.begin(), dataset.begin(), dataset.begin());
+    AssertContainerEqual(c, stdC);
+   
+    iter = c.insert(c.begin(), dataset.begin(), dataset.end());
+    IS_TRUE(iter == c.begin());
+    stdC.insert(stdC.begin(), dataset.begin(), dataset.end());
+    AssertContainerEqual(c, stdC);
+   
+    iter = c.insert(c.begin() + offset, dataset.begin(), dataset.end());
+    IS_TRUE(iter == c.begin() + offset);
+    stdC.insert(stdC.begin() + offset, dataset.begin(), dataset.end());
+    AssertContainerEqual(c, stdC);
+
+    // test at end()
+
+    Container c1;
+    std::vector<typename Container::value_type> stdC1;
+    auto length = dataset.size();
+
+    auto iter1 = c1.insert(c1.end(), dataset.begin(), dataset.begin());
+    IS_TRUE(iter1 == c1.end());
+    stdC1.insert(stdC1.end(), dataset.begin(), dataset.begin());
+    AssertContainerEqual(c1, stdC1);
+
+    iter1 = c1.insert(c1.end(), dataset.begin(), dataset.end());
+    IS_TRUE(iter1 == c1.end() - length);
+    stdC1.insert(stdC1.end(), dataset.begin(), dataset.end());
+    AssertContainerEqual(c1, stdC1);
+
+    iter1 = c1.insert(c1.end() - offset, dataset.begin(), dataset.end());
+    IS_TRUE(iter1 == c1.end() - offset - length);
+    stdC1.insert(stdC1.end() - offset, dataset.begin(), dataset.end());
+    AssertContainerEqual(c1, stdC1);
+}
+
+
+#define TSC_InsertRange(ContainerTemplate) \
+do { \
+    int offset = 5; \
+\
+    I_IL intData = {0,1,2,3,4,5,6,7,8,9}; \
+    TSC_InsertRangeAux< ContainerTemplate<int> >(intData, offset); \
+\
+    S_IL strData = {"", "a", "bc", "def", "ghij", "klmn"}; \
+    TSC_InsertRangeAux< ContainerTemplate<std::string> > (strData, offset); \
+} while (false)
+
+
+template<typename Container, typename DataSet>
+void TSC_InsertInitListAux(const DataSet & dataset)
+{
+    for (const auto & data : dataset)
+    {
+        auto length = data.size();
+        // test at begin()
+
+        Container c;
+        std::vector<typename Container::value_type> stdC;
+
+        auto iter = c.insert(c.begin(), data);
+        IS_TRUE(iter == c.begin());
+        stdC.insert(stdC.begin(), data);
+        AssertContainerEqual(c, stdC);
+
+        iter = c.insert(c.begin() + length, data);
+        IS_TRUE(iter == c.begin() + length);
+        stdC.insert(stdC.begin() + length, data);
+        AssertContainerEqual(c, stdC);
+
+        // test at end()
+
+        Container c1;
+        std::vector<typename Container::value_type> stdC1;
+
+        auto iter1 = c1.insert(c1.end(), data);
+        IS_TRUE(iter1 == c1.end() - length);
+        stdC1.insert(stdC1.end(), data);
+        AssertContainerEqual(c1, stdC1);
+
+        iter1 = c1.insert(c1.end() - length, data);
+        IS_TRUE(iter1 == c1.end() - length - length);
+        stdC1.insert(stdC1.end() - length, data);
+        AssertContainerEqual(c1, stdC1);
+    }
+
+
+}
+
+
+#define TSC_InsertInitList(ContainerTemplate) \
+do { \
+    std::initializer_list<I_IL> intData = \
+    { \
+        {}, {0}, {0, 0}, {0, 1, 2, 3} \
+    };\
+    TSC_InsertInitListAux< ContainerTemplate<int> >(intData); \
+\
+   std::initializer_list<S_IL> strData = \
+   { \
+        {}, {""}, {"a", "bc"}, {"def", "ghij", "klmn"} \
+   }; \
+   TSC_InsertInitListAux< ContainerTemplate<std::string> > (strData); \
+} while (false)

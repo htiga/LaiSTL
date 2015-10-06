@@ -341,7 +341,7 @@ namespace lai
         }
 
         template<typename ... Args>
-        iterator emplace(const_iterator pos, Args ... args)
+        iterator emplace(const_iterator pos, Args && ... args)
         {
             size_type steps = pos - cbegin();
             if (steps > size() / 2)

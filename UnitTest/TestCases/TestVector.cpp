@@ -147,6 +147,28 @@ namespace UnitTest
             TSC_InsertRvalue(lai::vector);
         }
 
+        TEST_METHOD(TestInsertCount)
+        {
+            TSC_InsertCount(lai::vector);
+
+            // test insert existed elements.
+
+            std::size_t count = 15;
+            LAI_SVEC ss{ "a" };
+            ss.insert(ss.begin(), count, ss[0]);
+            AssertContainerEqual(ss, STD_SVEC{ count + 1, "a" });
+        }
+
+        TEST_METHOD(TestInsertRange)
+        {
+            TSC_InsertRange(lai::vector);
+        }
+
+        TEST_METHOD(TestInsertInitList)
+        {
+            TSC_InsertInitList(lai::vector);
+        }
+
         //TEST_METHOD(TestPushBack)
         //{
         //    TSC_PushBack(lai::vector);
@@ -242,51 +264,6 @@ namespace UnitTest
         //TEST_METHOD(TestEmplace)
         //{
         //    TSC_Emplace(lai::vector);
-        //}
-
-        //TEST_METHOD(TestInsertCount)
-        //{
-        //    TSC_InsertCount(lai::vector, std::vector);
-
-        //    // test : insert existed elements.
-        //    // test if reallocation invalidate this operation.
-        //    std::size_t count = 15;
-        //    LAI_SVEC ss{ "a" };
-        //    ss.insert(ss.begin(), count, ss[0]);
-        //    AssertContainerEqual(ss, STD_SVEC{ count + 1, "a" });
-        //}
-
-        //TEST_METHOD(TestInsertInitList)
-        //{
-        //    TSC_InsertInitList(lai::vector);
-
-        //    LAI_SVEC v;
-        //    // test if reallocation invalidate this operation.
-        //    for (int i = 0; i != 20; ++i)
-        //    {
-        //        v.insert(v.end(), { "a" });
-        //    }
-        //    AssertContainerEqual(v, STD_SVEC{ 20, "a" });
-        //}
-
-
-        //TEST_METHOD(TestInsertRange)
-        //{
-        //    TSC_InsertRange(lai::vector, std::vector);
-
-        //    LAI_SVEC v;
-        //    STD_SVEC stdV;
-        //    std::initializer_list<std::string> il =
-        //    {
-        //        "lai", "stl"
-        //    };
-        //    for (int i = 0; i != 20; ++i)
-        //    {
-        //        v.insert(v.begin(), il.begin(), il.end());
-        //        stdV.insert(stdV.begin(), il.begin(), il.end());
-        //    }
-        //    AssertContainerEqual(v, stdV);
-
         //}
 
         //TEST_METHOD(TestSwap)

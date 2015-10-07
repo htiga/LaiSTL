@@ -893,3 +893,73 @@ do { \
         AssertContainerEqual(c, stdC); \
     } \
 } while (false)
+
+
+// ---- Test for emplace_back ----
+
+#define TSC_EmplaceBack(ContainerTemplate) \
+do { \
+    ContainerTemplate<std::string> c; \
+    STD_SVEC stdC; \
+\
+    c.emplace_back(); \
+    stdC.emplace_back(); \
+    AssertContainerEqual(c, stdC); \
+\
+    c.emplace_back("lai"); \
+    stdC.emplace_back("lai"); \
+    AssertContainerEqual(c, stdC); \
+\
+    c.emplace_back(3, 'a'); \
+    stdC.emplace_back(3, 'a'); \
+    AssertContainerEqual(c, stdC); \
+\
+    std::string str = "tiga"; \
+    c.emplace_back(str); \
+    stdC.emplace_back(str); \
+    AssertContainerEqual(c, stdC); \
+\
+    c.emplace_back(std::move(str)); \
+    stdC.emplace_back("tiga"); \
+    AssertContainerEqual(c, stdC); \
+\
+    std::initializer_list<char> il = { 'l', 'a', 'i', 's', 't', 'l' }; \
+    c.emplace_back(il); \
+    stdC.emplace_back(il); \
+    AssertContainerEqual(c, stdC); \
+} while (false)
+
+
+// ---- Test for emplace_front ----
+
+#define TSC_EmplaceFront(ContainerTemplate) \
+do { \
+    ContainerTemplate<std::string> c; \
+    std::deque<std::string> stdC; \
+\
+    c.emplace_front(); \
+    stdC.emplace_front(); \
+    AssertContainerEqual(c, stdC); \
+\
+    c.emplace_front("lai"); \
+    stdC.emplace_front("lai"); \
+    AssertContainerEqual(c, stdC); \
+\
+    c.emplace_front(3, 'a'); \
+    stdC.emplace_front(3, 'a'); \
+    AssertContainerEqual(c, stdC); \
+\
+    std::string str = "tiga"; \
+    c.emplace_front(str); \
+    stdC.emplace_front(str); \
+    AssertContainerEqual(c, stdC); \
+\
+    c.emplace_front(std::move(str)); \
+    stdC.emplace_front("tiga"); \
+    AssertContainerEqual(c, stdC); \
+\
+    std::initializer_list<char> il = { 'l', 'a', 'i', 's', 't', 'l' }; \
+    c.emplace_front(il); \
+    stdC.emplace_front(il); \
+    AssertContainerEqual(c, stdC); \
+} while (false)

@@ -231,20 +231,10 @@ namespace UnitTest
             }
         }
 
-        //TEST_METHOD(TestEmplaceBack)
-        //{
-        //    std::string s("a");
-        //    LAI_SVEC v;
-        //    v.emplace_back(1, 'a');
-        //    v.emplace_back("a");
-        //    v.emplace_back(s);
-        //    v.emplace_back(std::move(s));
-        //    AssertContainerEqual(v, STD_SVEC{4, "a"});
-
-        //    LAI_UVEC v1;
-        //    v1.emplace_back(Uncopyable());
-        //    IS_TRUE(v1.size() == 1);
-        //}
+        TEST_METHOD(TestEmplaceBack)
+        {
+            TSC_EmplaceBack(lai::vector);
+        }
 
 
         //TEST_METHOD(TestPopBack)

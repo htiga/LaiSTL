@@ -399,25 +399,29 @@ namespace UnitTest
             isInsertEndInvalidatePtrs<LAI_UDEQ, PtrContainer>(pushBack);
         }
 
-    //    TEST_METHOD(TestEmplaceBack)
-    //    {
-    //        TSC_EmplaceBack(lai::deque);
+        TEST_METHOD(TestEmplaceBack)
+        {
+            TSC_EmplaceBack(lai::deque);
 
-    //        using PtrContainer = std::vector<LAI_UDEQ::pointer>;
+            using PtrContainer = std::vector<LAI_UDEQ::pointer>;
+            auto emplaceBack = [](LAI_UDEQ & c)
+            {
+                c.emplace_back(Uncopyable(42));
+            };
+            isInsertEndInvalidatePtrs<LAI_UDEQ, PtrContainer>(emplaceBack);
+        }
 
-    //        isInsertEndInvalidatePtrs<LAI_UDEQ, PtrContainer>(
-    //            [](LAI_UDEQ & c) { c.emplace_back(Uncopyable(42)); });
-    //    }
+        TEST_METHOD(TestEmplaceFront)
+        {
+            TSC_EmplaceFront(lai::deque);
 
-    //    TEST_METHOD(TestEmplaceFront)
-    //    {
-    //        TSC_EmplaceFront(lai::deque);
-
-    //        using PtrContainer = std::deque<LAI_UDEQ::pointer>;
-
-    //        isInsertBeginInvalidatePtrs<LAI_UDEQ, PtrContainer>(
-    //            [](LAI_UDEQ & c) { c.emplace_front(Uncopyable(42)); });
-    //    }
+            using PtrContainer = std::deque<LAI_UDEQ::pointer>;
+            auto empalceFront = [](LAI_UDEQ & c)
+            {
+                c.emplace_front(Uncopyable(42));
+            };
+            isInsertBeginInvalidatePtrs<LAI_UDEQ, PtrContainer>(empalceFront);
+        }
 
         TEST_METHOD(TestPushFrontLvalue)
         {

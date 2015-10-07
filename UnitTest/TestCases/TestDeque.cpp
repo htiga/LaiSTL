@@ -121,19 +121,17 @@ namespace UnitTest
             IS_TRUE(iDeq.size() == 0);
         }
 
-        // operation must insert an element at the end of the container
-        template<typename Container, typename PtrContainer>
-        void isBackOperationInvalidPtrs(std::function<void(Container & c)> operation,
-            const int performedTimes = 100)
+        template<typename Container, typename PtrContainer, typename InsertEnd>
+        void isInsertEndInvalidatePtrs(InsertEnd insertEnd, const int performedTimes = 100)
         {
             Container container;
             PtrContainer ptrs;
             for (int i = 0; i != performedTimes; ++i)
             {
-                operation(container);
+                insertEnd(container);
                 ptrs.push_back(&container[i]);
             }
-            operation(container);
+            insertEnd(container);
 
             for (int i = 0; i != performedTimes; ++i)
             {
@@ -141,19 +139,17 @@ namespace UnitTest
             }
         }
 
-        // operation must insert an element at the begin of the container
-        template<typename Container, typename PtrContainer>
-        void isFrontOperationInvalidatePtrs(std::function<void(Container & c)> operation,
-            const int performedTimes = 100)
+        template<typename Container, typename PtrContainer, typename InsertBegin>
+        void isInsertBeginInvalidatePtrs(InsertBegin insertBegin, const int performedTimes = 100)
         {
             Container container;
             PtrContainer ptrs;
             for (int i = 0; i != performedTimes; ++i)
             {
-                operation(container);
+                insertBegin(container);
                 ptrs.push_front(&container[i]);
             }
-            operation(container);
+            insertBegin(container);
 
             for (int i = 0; i != performedTimes; ++i)
             {
@@ -175,14 +171,14 @@ namespace UnitTest
                 std::string i = "lai";
                 c.insert(c.end(), i);
             };
-            isBackOperationInvalidPtrs<LAI_SDEQ, PtrContainer>(insertEnd, 10);
+            isInsertEndInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertEnd, 10);
 
             auto insertBegin = [](LAI_SDEQ & c)
             {
                 std::string i = "lai";
                 c.insert(c.begin(), i);
             };
-            isFrontOperationInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertBegin, 10);
+            isInsertBeginInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertBegin, 10);
         }
 
         TEST_METHOD(TestInsertRvalue)
@@ -197,13 +193,13 @@ namespace UnitTest
             {
                 c.insert(c.end(), Uncopyable(42));
             };
-            isBackOperationInvalidPtrs<LAI_UDEQ, PtrContainer>(insertEnd, 10);
+            isInsertEndInvalidatePtrs<LAI_UDEQ, PtrContainer>(insertEnd, 10);
 
             auto insertBegin = [](LAI_UDEQ & c)
             {
                 c.insert(c.begin(), Uncopyable(42));
             };
-            isFrontOperationInvalidatePtrs<LAI_UDEQ, PtrContainer>(insertBegin, 10);
+            isInsertBeginInvalidatePtrs<LAI_UDEQ, PtrContainer>(insertBegin, 10);
         }
 
         TEST_METHOD(TestInsertCount)
@@ -219,14 +215,14 @@ namespace UnitTest
                 std::string i = "lai";
                 c.insert(c.end(), 2, i);
             };
-            isBackOperationInvalidPtrs<LAI_SDEQ, PtrContainer>(insertEnd, 10);
+            isInsertEndInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertEnd, 10);
 
             auto insertBegin = [](LAI_SDEQ & c)
             {
                 std::string i = "lai";
                 c.insert(c.begin(), 2, i);
             };
-            isFrontOperationInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertBegin, 10);
+            isInsertBeginInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertBegin, 10);
         }
 
         TEST_METHOD(TestInsertRange)
@@ -242,14 +238,14 @@ namespace UnitTest
                 S_IL il = { std::string("lai") };
                 c.insert(c.end(), il.begin(), il.end());
             };
-            isBackOperationInvalidPtrs<LAI_SDEQ, PtrContainer>(insertEnd, 10);
+            isInsertEndInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertEnd, 10);
 
             auto insertBegin = [](LAI_SDEQ & c)
             {
                 S_IL il = { std::string("lai") };
                 c.insert(c.begin(), il.begin(), il.end());
             };
-            isFrontOperationInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertBegin, 10);
+            isInsertBeginInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertBegin, 10);
         }
 
         TEST_METHOD(TestInsertInitList)
@@ -264,55 +260,144 @@ namespace UnitTest
             {
                 c.insert(c.end(), { std::string("laistl") });
             };
-            isBackOperationInvalidPtrs<LAI_SDEQ, PtrContainer>(insertEnd, 10);
+            isInsertEndInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertEnd, 10);
 
             auto insertBegin = [](LAI_SDEQ & c)
             {
                 c.insert(c.begin(), { std::string("laistl") });
             };
-            isFrontOperationInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertBegin, 10);
+            isInsertBeginInvalidatePtrs<LAI_SDEQ, PtrContainer>(insertBegin, 10);
         }
 
-    //    TEST_METHOD(TestErase)
-    //    {
-    //        TSC_Erase(lai::deque);
-    //    }
+        TEST_METHOD(TestEmplace)
+        {
+            TSC_Emplace(lai::deque);
 
-    //    TEST_METHOD(TestEraseRange)
-    //    {
-    //        TSC_EraseRange(lai::deque);
-    //    }
+            // test if insert begin() or end() invalidate pointers.
 
-    //    TEST_METHOD(TestEmplace)
-    //    {
-    //        TSC_Emplace(lai::deque);
+            using PtrContainer = std::deque<LAI_UDEQ::pointer>;
 
-    //        using PtrContainer = std::deque<LAI_UDEQ::pointer>;
-    //        isBackOperationInvalidPtrs<LAI_UDEQ, PtrContainer>(
-    //            [](LAI_UDEQ & c) { c.emplace(c.end(), Uncopyable(42)); }, 20);
-    //        isFrontOperationInvalidatePtrs<LAI_UDEQ, PtrContainer>(
-    //            [](LAI_UDEQ & c) { c.emplace(c.begin(), Uncopyable(41)); }, 20);
-    //    }
+            auto insertBegin = [](LAI_UDEQ & c)
+            {
+                c.emplace(c.begin(), Uncopyable(42));
+            };
+            isInsertBeginInvalidatePtrs<LAI_UDEQ, PtrContainer>(insertBegin, 10);
 
-    //    TEST_METHOD(TestPushBack)
-    //    {
-    //        TSC_PushBack(lai::deque);
+            auto insertEnd = [](LAI_UDEQ & c)
+            {
+                c.emplace(c.end(), Uncopyable(42));
+            };
+            isInsertEndInvalidatePtrs<LAI_UDEQ, PtrContainer>(insertEnd, 10);
+        }
 
-    //        using PtrContainer = std::vector<LAI_IDEQ::pointer>;
+        template<typename EraseBegin>
+        void isEraseBeginInvalidatePtrs(EraseBegin eraseBegin)
+        {
+            S_IL data = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" };
+            STD_SVEC values(data);
+            LAI_SDEQ c = (data);
+            std::vector<LAI_SDEQ::pointer> pointers;
 
-    //        isBackOperationInvalidPtrs<LAI_IDEQ, PtrContainer>(
-    //            [](LAI_IDEQ & c) { int elem = 42;  c.push_back(elem); });
-    //    }
+            for (auto & val : c)
+            {
+                pointers.push_back(std::addressof(val));
+            }
 
-    //    TEST_METHOD(TestMovePushBack)
-    //    {
-    //        TSC_MovePushBack(lai::deque);
+            while (!c.empty())
+            {
+                eraseBegin(c);
+                pointers.erase(pointers.begin());
+                values.erase(values.begin());
+                for (int i = 0; i != pointers.size(); ++i)
+                {
+                    IS_TRUE(*pointers[i] == values[i]);
+                }
+            }
+        }
 
-    //        using PtrContainer = std::vector<LAI_UDEQ::pointer>;
+        template<typename EraseEnd>
+        void isEraseEndInvalidatePtrs(EraseEnd eraseEnd)
+        {
+            S_IL data = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" };
+            STD_SVEC values(data);
+            LAI_SDEQ c = (data);
+            std::vector<LAI_SDEQ::pointer> pointers;
 
-    //        isBackOperationInvalidPtrs<LAI_UDEQ, PtrContainer>(
-    //            [](LAI_UDEQ & c) { c.push_back(Uncopyable(42)); });
-    //    }
+            for (auto & val : c)
+            {
+                pointers.push_back(std::addressof(val));
+            }
+
+            while (!c.empty())
+            {
+                eraseEnd(c);
+                values.erase(values.end() - 1);
+                pointers.erase(pointers.end() - 1);
+                for (int i = 0; i != pointers.size(); ++i)
+                {
+                    IS_TRUE(*pointers[i] == values[i]);
+                }
+            }
+        }
+
+        TEST_METHOD(TestErase)
+        {
+            TSC_Erase(lai::deque);
+
+            auto eraseBegin = [](LAI_SDEQ & c)
+            {
+                c.erase(c.begin());
+            };
+            isEraseBeginInvalidatePtrs(eraseBegin);
+
+            auto eraseEnd = [](LAI_SDEQ & c)
+            {
+                c.erase(c.end() - 1);
+            };
+            isEraseEndInvalidatePtrs(eraseEnd);
+        }
+
+        TEST_METHOD(TestEraseRange)
+        {
+            TSC_EraseRange(lai::deque);
+
+            auto eraseBegin = [](LAI_SDEQ & c)
+            {
+                c.erase(c.begin(), c.begin() + 1);
+            };
+            isEraseBeginInvalidatePtrs(eraseBegin);
+
+            auto eraseEnd = [](LAI_SDEQ & c)
+            {
+                c.erase(c.end() - 1, c.end());
+            };
+            isEraseEndInvalidatePtrs(eraseEnd);
+        }
+
+        TEST_METHOD(TestPushBackLvalue)
+        {
+            TSC_PushBackLvalue(lai::deque);
+
+            using PtrContainer = std::vector<LAI_SDEQ::pointer>;
+            auto pushBack = [](LAI_SDEQ & c)
+            {
+                std::string str = "lai";
+                c.push_back(str);
+            };
+            isInsertEndInvalidatePtrs<LAI_SDEQ, PtrContainer>(pushBack);
+        }
+
+        TEST_METHOD(TestPushBackRvalue)
+        {
+            TSC_PushBackRvalue(lai::deque);
+
+            using PtrContainer = std::vector<LAI_UDEQ::pointer>;
+            auto pushBack = [](LAI_UDEQ & c)
+            {
+                c.push_back(Uncopyable(42));
+            };
+            isInsertEndInvalidatePtrs<LAI_UDEQ, PtrContainer>(pushBack);
+        }
 
     //    TEST_METHOD(TestEmplaceBack)
     //    {
@@ -320,7 +405,7 @@ namespace UnitTest
 
     //        using PtrContainer = std::vector<LAI_UDEQ::pointer>;
 
-    //        isBackOperationInvalidPtrs<LAI_UDEQ, PtrContainer>(
+    //        isInsertEndInvalidatePtrs<LAI_UDEQ, PtrContainer>(
     //            [](LAI_UDEQ & c) { c.emplace_back(Uncopyable(42)); });
     //    }
 
@@ -330,29 +415,34 @@ namespace UnitTest
 
     //        using PtrContainer = std::deque<LAI_UDEQ::pointer>;
 
-    //        isFrontOperationInvalidatePtrs<LAI_UDEQ, PtrContainer>(
+    //        isInsertBeginInvalidatePtrs<LAI_UDEQ, PtrContainer>(
     //            [](LAI_UDEQ & c) { c.emplace_front(Uncopyable(42)); });
     //    }
 
-    //    TEST_METHOD(TestPushFront)
-    //    {
-    //        TSC_PushFront(lai::deque);
+        TEST_METHOD(TestPushFrontLvalue)
+        {
+            TSC_PushFrontLvalue(lai::deque);
 
-    //        using PtrContainer = std::deque<LAI_IDEQ::pointer>;
+            using PtrContainer = std::deque<LAI_SDEQ::pointer>;
+            auto pushFront = [](LAI_SDEQ & c)
+            {
+                std::string str = "lai";
+                c.push_front(str);
+            };
+            isInsertBeginInvalidatePtrs<LAI_SDEQ, PtrContainer>(pushFront);
+        }
 
-    //        isFrontOperationInvalidatePtrs<LAI_IDEQ, PtrContainer>(
-    //            [](LAI_IDEQ & c) { int elem = 42; c.push_front(elem); });
-    //    }
+        TEST_METHOD(TestPushFrontRvalue)
+        {
+            TSC_PushFrontRvalue(lai::deque);
 
-    //    TEST_METHOD(TestMovePushFront)
-    //    {
-    //        TSC_MovePushFront(lai::deque);
-
-    //        using PtrContainer = std::deque<LAI_UDEQ::pointer>;
-
-    //        isFrontOperationInvalidatePtrs<LAI_UDEQ, PtrContainer>(
-    //            [](LAI_UDEQ & c) { c.push_front(Uncopyable(42)); });
-    //    }
+            using PtrContainer = std::deque<LAI_UDEQ::pointer>;
+            auto pushFront = [](LAI_UDEQ & c)
+            {
+                c.push_front(Uncopyable(42));
+            };
+            isInsertBeginInvalidatePtrs<LAI_UDEQ, PtrContainer>(pushFront);
+        }
 
     //    TEST_METHOD(TestPopBack)
     //    {

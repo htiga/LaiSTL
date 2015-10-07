@@ -169,54 +169,67 @@ namespace UnitTest
             TSC_InsertInitList(lai::vector);
         }
 
-        //TEST_METHOD(TestPushBack)
-        //{
-        //    TSC_PushBack(lai::vector);
+        TEST_METHOD(TestEmplace)
+        {
+            TSC_Emplace(lai::vector);
+        }
 
-        //    // test : push_back an element existed in the vector is valid.
-        //    //        Reallocation may invalidate this operation.
+        TEST_METHOD(TestErase)
+        {
+            TSC_Erase(lai::vector);
+        }
 
-        //    int size = 100;
-        //    std::string data[] = { "lai", "stl" };
-        //    LAI_SVEC s{ "lai", "stl" };
+        TEST_METHOD(TestEraseRange)
+        {
+            TSC_EraseRange(lai::vector);
+        }
 
-        //    for (int i = 0; i != size; ++i)
-        //    {
-        //        s.push_back(s[i]);
-        //    }
+        TEST_METHOD(TestPushBackLvalue)
+        {
+            TSC_PushBackLvalue(lai::vector);
 
-        //    for (int i = 0; i != size + 2; ++i)
-        //    {
-        //        IS_TRUE(s[i] == data[i % 2]);
-        //    }
-        //}
+            // test if push_back an element existed in the vector is valid.
 
-        //TEST_METHOD(TestMovePushBack)
-        //{
-        //    TSC_MovePushBack(lai::vector);
+            int size = 30;
+            std::string data[] = { "lai", "stl" };
+            LAI_SVEC s{ "lai", "stl" };
 
-        //    // test : push_back an element existed in the vector is valid.
-        //    //        Reallocation may invalidate this operation.
+            for (int i = 0; i != size; ++i)
+            {
+                s.push_back(s[i]);
+            }
 
-        //    int size = 50;
-        //    LAI_UVEC uVec;
-        //    STD_UVEC stdV;
-        //    for (int i = 0; i != size; ++i)
-        //    {
-        //        uVec.push_back(Uncopyable(i));
-        //        stdV.push_back(Uncopyable(i));
-        //    }
+            for (int i = 0; i != size + 2; ++i)
+            {
+                IS_TRUE(s[i] == data[i % 2]);
+            }
+        }
 
-        //    for (int i = 0; i != size; ++i)
-        //    {
-        //        uVec.push_back(std::move(uVec[i]));
-        //    }
+        TEST_METHOD(TestPushBackRvalue)
+        {
+            TSC_PushBackRvalue(lai::vector);
 
-        //    for (int i = size; i != size * 2; ++i)
-        //    {
-        //        IS_TRUE(uVec[i] == stdV[i - size]);
-        //    }
-        //}
+            // test if push_back an element existed in the vector is valid.
+
+            int size = 30;
+            LAI_UVEC uVec;
+            STD_UVEC stdV;
+            for (int i = 0; i != size; ++i)
+            {
+                uVec.push_back(Uncopyable(i));
+                stdV.push_back(Uncopyable(i));
+            }
+
+            for (int i = 0; i != size; ++i)
+            {
+                uVec.push_back(std::move(uVec[i]));
+            }
+
+            for (int i = size; i != size * 2; ++i)
+            {
+                IS_TRUE(uVec[i] == stdV[i - size]);
+            }
+        }
 
         //TEST_METHOD(TestEmplaceBack)
         //{
@@ -239,17 +252,6 @@ namespace UnitTest
         //    TSC_PopBack(lai::vector, std::vector);
         //}
 
-
-        //TEST_METHOD(TestErase)
-        //{
-        //    TSC_Erase(lai::vector);
-        //}
-
-        //TEST_METHOD(TestEraseRange)
-        //{
-        //    TSC_EraseRange(lai::vector);
-        //}
-
         //TEST_METHOD(TestResize)
         //{
         //    TSC_Resize(lai::vector);
@@ -258,12 +260,6 @@ namespace UnitTest
         //TEST_METHOD(TestResizeVal)
         //{
         //    TSC_ResizeVal(lai::vector);
-        //}
-
-
-        //TEST_METHOD(TestEmplace)
-        //{
-        //    TSC_Emplace(lai::vector);
         //}
 
         //TEST_METHOD(TestSwap)

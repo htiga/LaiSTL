@@ -691,3 +691,205 @@ do { \
    }; \
    TSC_InsertInitListAux< ContainerTemplate<std::string> > (strData); \
 } while (false)
+
+
+// ---- Test for emplace ----
+
+#define TSC_Emplace(ContainerTemplate) \
+do { \
+    ContainerTemplate<Uncopyable> c; \
+    STD_UVEC stdC; \
+\
+    auto iter = c.emplace(c.begin()); \
+    IS_TRUE(iter == c.begin()); \
+    stdC.emplace(stdC.begin()); \
+    AssertContainerEqual(c, stdC); \
+\
+    iter = c.emplace(c.end()); \
+    IS_TRUE(iter == c.end() - 1); \
+    stdC.emplace(stdC.end()); \
+    AssertContainerEqual(c, stdC); \
+\
+    ContainerTemplate<std::string> c1; \
+    STD_SVEC stdC1; \
+\
+    auto iter1 = c1.emplace(c1.begin()); \
+    IS_TRUE(iter1 == c1.begin()); \
+    stdC1.emplace(stdC1.begin()); \
+    AssertContainerEqual(c1, stdC1); \
+\
+    iter1 = c1.emplace(c1.end(), "lai"); \
+    IS_TRUE(iter1 == c1.end() - 1); \
+    stdC1.emplace(stdC1.end(), "lai"); \
+    AssertContainerEqual(c1, stdC1); \
+\
+    iter1 = c1.emplace(c1.begin() + 1, 3, 'a'); \
+    IS_TRUE(iter1 == c1.begin() + 1); \
+    stdC1.emplace(stdC1.begin() + 1, 3, 'a'); \
+    AssertContainerEqual(c1, stdC1); \
+\
+    std::string str = "tiga"; \
+    iter1 = c1.emplace(c1.end() - 1, str); \
+    IS_TRUE(iter1 == c1.end() - 2); \
+    stdC1.emplace(stdC1.end() - 1, str); \
+    AssertContainerEqual(c1, stdC1); \
+\
+    iter1= c1.emplace(c1.begin() + 2, std::move(str)); \
+    IS_TRUE(iter1 == c1.begin() + 2); \
+    stdC1.emplace(stdC1.begin() + 2, "tiga"); \
+    AssertContainerEqual(c1, stdC1); \
+\
+    std::initializer_list<char> il = {'l', 'a', 'i', 's', 't', 'l'}; \
+    iter1 = c1.emplace(c1.end() - 2, il); \
+    IS_TRUE(iter1 == c1.end() - 3); \
+    stdC1.emplace(stdC1.end() - 2, il); \
+    AssertContainerEqual(c1, stdC1); \
+} while (false)
+
+
+// ---- Test for erase ----
+
+#define TSC_Erase(ContainerTemplate) \
+do { \
+    I_IL intData = {0,1,2,3,4,5,6,7,8,9};\
+    ContainerTemplate<int> c(intData);   \
+    STD_IVEC stdC(intData);              \
+                                         \
+    auto iter = c.erase(c.begin());      \
+    IS_TRUE(iter == c.begin());          \
+    stdC.erase(stdC.begin());            \
+    AssertContainerEqual(c, stdC);       \
+                                         \
+    iter = c.erase(c.end() - 1);         \
+    IS_TRUE(iter == c.end());            \
+    stdC.erase(stdC.end() - 1);          \
+    AssertContainerEqual(c, stdC);       \
+                                         \
+    iter = c.erase(c.begin() + 3);       \
+    IS_TRUE(iter == c.begin() + 3);      \
+    stdC.erase(stdC.begin() + 3);        \
+    AssertContainerEqual(c, stdC);       \
+                                         \
+    iter = c.erase(c.end() - 3);         \
+    IS_TRUE(iter == c.end() - 2);        \
+    stdC.erase(stdC.end() - 3);          \
+    AssertContainerEqual(c, stdC);       \
+} while (false)
+
+
+#define TSC_EraseRange(ContainerTemplate) \
+do { \
+    I_IL intData = {0,1,2,3,4,5,6,7,8,9};              \
+    ContainerTemplate<int> c(intData);                 \
+    STD_IVEC stdC(intData);                            \
+                                                       \
+    auto iter = c.erase(c.begin(), c.begin());         \
+    IS_TRUE(iter == c.begin());                        \
+    stdC.erase(stdC.begin(), stdC.begin());            \
+    AssertContainerEqual(c, stdC);                     \
+                                                       \
+    iter = c.erase(c.begin(), c.begin() + 1);          \
+    IS_TRUE(iter == c.begin());                        \
+    stdC.erase(stdC.begin(), stdC.begin() + 1);        \
+    AssertContainerEqual(c, stdC);                     \
+                                                       \
+    iter = c.erase(c.end() - 1, c.end());              \
+    IS_TRUE(iter == c.end());                          \
+    stdC.erase(stdC.end() - 1, stdC.end());            \
+    AssertContainerEqual(c, stdC);                     \
+                                                       \
+    iter = c.erase(c.begin() + 1, c.begin() + 3);      \
+    IS_TRUE(iter == c.begin() + 1);                    \
+    stdC.erase(stdC.begin() + 1, stdC.begin() + 3);    \
+    AssertContainerEqual(c, stdC);                     \
+                                                       \
+    iter = c.erase(c.end() - 3, c.end() - 1);          \
+    IS_TRUE(iter == c.end() - 1);                      \
+    stdC.erase(stdC.end() - 3, stdC.end() - 1);        \
+    AssertContainerEqual(c, stdC);                     \
+                                                       \
+    iter = c.erase(c.begin(), c.end());                \
+    IS_TRUE(iter == c.begin());                        \
+    stdC.erase(stdC.begin(), stdC.end());              \
+    AssertContainerEqual(c, stdC);                     \
+} while (false)
+
+
+// ---- Test for push_back ----
+
+template<typename Container, typename DataSet>
+void TSC_PushBackLvalueAux(const DataSet & dataset)
+{
+    Container c;
+    std::vector<typename Container::value_type> stdC;
+    for (const auto & val : dataset)
+    {
+        c.push_back(val);
+        stdC.push_back(val);
+        AssertContainerEqual(c, stdC);
+    }
+}
+
+
+#define TSC_PushBackLvalue(ContainerTemplate) \
+do { \
+    I_IL intData = {0,1,2,3,4,5,6,7,8,9}; \
+    TSC_PushBackLvalueAux< ContainerTemplate<int> >(intData); \
+\
+    S_IL strData = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" }; \
+    TSC_PushBackLvalueAux< ContainerTemplate<std::string> >(strData); \
+} while (false)
+
+
+#define TSC_PushBackRvalue(ContainerTemplate) \
+do { \
+    ContainerTemplate<Uncopyable> c; \
+    STD_UVEC stdC; \
+\
+    for (int i = 0; i != 10; ++i) \
+    { \
+        c.push_back(Uncopyable(i)); \
+        stdC.push_back(Uncopyable(i)); \
+        AssertContainerEqual(c, stdC); \
+    } \
+} while (false)
+
+
+// --- Test for push_front ----
+
+template<typename Container, typename DataSet>
+void TSC_PushFrontLvalueAux(const DataSet & dataset)
+{
+    Container c;
+    std::deque<typename Container::value_type> stdC;
+    for (const auto & val : dataset)
+    {
+        c.push_front(val);
+        stdC.push_front(val);
+        AssertContainerEqual(c, stdC);
+    }
+}
+
+
+#define TSC_PushFrontLvalue(ContainerTemplate) \
+do { \
+    I_IL intData = {0,1,2,3,4,5,6,7,8,9}; \
+    TSC_PushFrontLvalueAux< ContainerTemplate<int> >(intData); \
+\
+    S_IL strData = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" }; \
+    TSC_PushFrontLvalueAux< ContainerTemplate<std::string> >(strData); \
+} while (false)
+
+
+#define TSC_PushFrontRvalue(ContainerTemplate) \
+do { \
+    ContainerTemplate<Uncopyable> c; \
+    std::deque<Uncopyable> stdC; \
+\
+    for (int i = 0; i != 10; ++i) \
+    { \
+        c.push_front(Uncopyable(i)); \
+        stdC.push_front(Uncopyable(i)); \
+        AssertContainerEqual(c, stdC); \
+    } \
+} while (false)

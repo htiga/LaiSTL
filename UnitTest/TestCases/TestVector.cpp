@@ -258,9 +258,9 @@ namespace UnitTest
             TSC_NonMemberSwap(lai::vector, lai::swap);
         }
 
-        //TEST_METHOD(TestRelationalOperators)
-        //{
-        //    TSC_RelationalOperator(lai::vector);
-        //}
+        TEST_METHOD(TestRelationalOperators)
+        {
+            TSC_RelationalOperator(lai::vector);
+        }
     };
 }

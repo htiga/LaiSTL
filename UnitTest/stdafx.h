@@ -11,6 +11,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 // Utility headers for unit test
+#include <deque>
 #include <vector>
 #include <string>
 #include <initializer_list>

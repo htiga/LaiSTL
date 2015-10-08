@@ -817,15 +817,18 @@ do { \
 
 // ---- Test for push_back ----
 
-template<typename Container, typename DataSet>
-void TSC_PushBackLvalueAux(const DataSet & dataset)
+template<typename Container,
+         typename DataSet,
+         typename TestPushOp,
+         typename StdPushOp>
+void TSC_PushLvalueAux(const DataSet & dataset, TestPushOp testPush, StdPushOp stdPush)
 {
     Container c;
-    std::vector<typename Container::value_type> stdC;
+    std::deque<typename Container::value_type> stdC;
     for (const auto & val : dataset)
     {
-        c.push_back(val);
-        stdC.push_back(val);
+        testPush(c, val);
+        stdPush(stdC, val);
         AssertContainerEqual(c, stdC);
     }
 }
@@ -833,11 +836,13 @@ void TSC_PushBackLvalueAux(const DataSet & dataset)
 
 #define TSC_PushBackLvalue(ContainerTemplate) \
 do { \
+    auto pushBack = [](auto & c, const auto & val) { c.push_back(val); }; \
+\
     I_IL intData = {0,1,2,3,4,5,6,7,8,9}; \
-    TSC_PushBackLvalueAux< ContainerTemplate<int> >(intData); \
+    TSC_PushLvalueAux< ContainerTemplate<int> >(intData, pushBack, pushBack); \
 \
     S_IL strData = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" }; \
-    TSC_PushBackLvalueAux< ContainerTemplate<std::string> >(strData); \
+    TSC_PushLvalueAux< ContainerTemplate<std::string> >(strData, pushBack, pushBack); \
 } while (false)
 
 
@@ -857,27 +862,15 @@ do { \
 
 // --- Test for push_front ----
 
-template<typename Container, typename DataSet>
-void TSC_PushFrontLvalueAux(const DataSet & dataset)
-{
-    Container c;
-    std::deque<typename Container::value_type> stdC;
-    for (const auto & val : dataset)
-    {
-        c.push_front(val);
-        stdC.push_front(val);
-        AssertContainerEqual(c, stdC);
-    }
-}
-
 
 #define TSC_PushFrontLvalue(ContainerTemplate) \
 do { \
+    auto pushFront = [](auto & c, const auto & val) { c.push_front(val); }; \
     I_IL intData = {0,1,2,3,4,5,6,7,8,9}; \
-    TSC_PushFrontLvalueAux< ContainerTemplate<int> >(intData); \
+    TSC_PushLvalueAux< ContainerTemplate<int> >(intData, pushFront, pushFront); \
 \
     S_IL strData = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" }; \
-    TSC_PushFrontLvalueAux< ContainerTemplate<std::string> >(strData); \
+    TSC_PushLvalueAux< ContainerTemplate<std::string> >(strData, pushFront, pushFront); \
 } while (false)
 
 
@@ -962,4 +955,51 @@ do { \
     c.emplace_front(il); \
     stdC.emplace_front(il); \
     AssertContainerEqual(c, stdC); \
+} while (false)
+
+
+// ---- Test for pop_back ----
+
+template<typename Container,
+         typename StdContainer,
+         typename TestPopOp,
+         typename StdPopOp>
+void TSC_PopAux(Container & c, StdContainer & stdC, TestPopOp testPop, StdPopOp stdPop)
+{
+    while (!stdC.empty())
+    {
+        testPop(c);
+        stdPop(stdC);
+        AssertContainerEqual(c, stdC);
+    }
+}
+
+
+#define TSC_PopBack(ContainerTemplate) \
+do { \
+    auto popBack = [](auto & c) { c.pop_back(); }; \
+    I_IL intData = {0,1,2,3,4,5,6,7,8,9}; \
+    ContainerTemplate<int> c(intData); \
+    STD_IVEC stdC(intData); \
+    TSC_PopAux(c, stdC, popBack, popBack); \
+\
+    S_IL strData = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" }; \
+    ContainerTemplate<std::string> c1(strData); \
+    STD_SVEC stdC1(strData); \
+    TSC_PopAux< ContainerTemplate<std::string> >(c1, stdC1, popBack, popBack); \
+} while (false)
+
+
+#define TSC_PopFront(ContainerTemplate) \
+do { \
+    auto popFront = [](auto & c) { c.pop_front(); }; \
+    I_IL intData = {0,1,2,3,4,5,6,7,8,9}; \
+    ContainerTemplate<int> c(intData); \
+    std::deque<int> stdC(intData); \
+    TSC_PopAux(c, stdC, popFront, popFront); \
+\
+    S_IL strData = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" }; \
+    ContainerTemplate<std::string> c1(strData); \
+    std::deque<std::string> stdC1(strData); \
+    TSC_PopAux< ContainerTemplate<std::string> >(c1, stdC1, popFront, popFront); \
 } while (false)

@@ -1060,3 +1060,52 @@ do { \
     stdC.resize(0, "c"); \
     AssertContainerEqual(c, stdC); \
 } while (false)
+
+
+// ---- Test for swap ----
+
+template<typename StrContainer,
+         typename SwapOp>
+void TSC_SwapStringAux(SwapOp swapOp)
+{
+    StrContainer c, c1;
+    S_IL strData = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" };
+       
+    swapOp(c, c1);
+    IS_TRUE(c.empty());
+    IS_TRUE(c1.empty());
+       
+    c = strData;
+    swapOp(c1, c);
+    AssertContainerEqual(c1, strData);
+    IS_TRUE(c.empty());
+       
+    swapOp(c1, c);
+    AssertContainerEqual(c, strData);
+    IS_TRUE(c1.empty());
+       
+    c1 = strData;
+    swapOp(c, c1);
+    AssertContainerEqual(c, strData);
+    AssertContainerEqual(c1, strData);
+       
+    S_IL data = { "a", "b", "c" };
+    c1 = data;
+    swapOp(c1, c);
+    AssertContainerEqual(c1, strData);
+    AssertContainerEqual(c, data);
+}
+
+
+#define TSC_MemberSwap(ContainerTemplate) \
+do { \
+    auto swapOp = [](auto & c, auto & c1) { c.swap(c1); }; \
+    TSC_SwapStringAux< ContainerTemplate<std::string> >(swapOp); \
+} while (false)
+
+
+#define TSC_NonMemberSwap(ContainerTemplate, Swap) \
+do { \
+    auto swapOp = [](auto & c, auto & c1) { Swap(c, c1); }; \
+    TSC_SwapStringAux< ContainerTemplate<std::string> >(swapOp); \
+} while (false)

@@ -488,9 +488,9 @@ namespace UnitTest
             TSC_NonMemberSwap(lai::deque, lai::swap);
         }
 
-    //    TEST_METHOD(TestRelationalOperators)
-    //    {
-    //        TSC_RelationalOperator(lai::deque);
-    //    }
+        TEST_METHOD(TestRelationalOperators)
+        {
+            TSC_RelationalOperator(lai::deque);
+        }
     };
 }

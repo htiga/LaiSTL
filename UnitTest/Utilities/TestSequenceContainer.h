@@ -1109,3 +1109,49 @@ do { \
     auto swapOp = [](auto & c, auto & c1) { Swap(c, c1); }; \
     TSC_SwapStringAux< ContainerTemplate<std::string> >(swapOp); \
 } while (false)
+
+
+// ---- Test for relational operator ----
+
+#define TSC_RelationalOperator(ContainerTemplate) \
+do { \
+    ContainerTemplate<int> c, c1; \
+    IS_TRUE(c == c1); \
+    IS_FALSE(c != c1);\
+    IS_FALSE(c < c1); \
+    IS_TRUE(c <= c1); \
+    IS_FALSE(c > c1); \
+    IS_TRUE(c >= c1); \
+\
+    c = { 0 }; \
+    IS_FALSE(c == c1); \
+    IS_TRUE(c != c1);\
+    IS_FALSE(c < c1); \
+    IS_FALSE(c <= c1); \
+    IS_TRUE(c > c1); \
+    IS_TRUE(c >= c1); \
+\
+    c1 = { 0 }; \
+    IS_TRUE(c == c1); \
+    IS_FALSE(c != c1);\
+    IS_FALSE(c < c1); \
+    IS_TRUE(c <= c1); \
+    IS_FALSE(c > c1); \
+    IS_TRUE(c >= c1); \
+\
+    c = {0, 1}; \
+    IS_FALSE(c == c1); \
+    IS_TRUE(c != c1);\
+    IS_FALSE(c < c1); \
+    IS_FALSE(c <= c1); \
+    IS_TRUE(c > c1); \
+    IS_TRUE(c >= c1); \
+\
+    c1 = {0, 1}; \
+    IS_TRUE(c == c1); \
+    IS_FALSE(c != c1);\
+    IS_FALSE(c < c1); \
+    IS_TRUE(c <= c1); \
+    IS_FALSE(c > c1); \
+    IS_TRUE(c >= c1); \
+} while (false)

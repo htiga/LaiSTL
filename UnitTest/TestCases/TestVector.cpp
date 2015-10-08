@@ -242,15 +242,15 @@ namespace UnitTest
             TSC_PopBack(lai::vector);
         }
 
-        //TEST_METHOD(TestResize)
-        //{
-        //    TSC_Resize(lai::vector);
-        //}
+        TEST_METHOD(TestResize)
+        {
+            TSC_Resize(lai::vector);
+        }
 
-        //TEST_METHOD(TestResizeVal)
-        //{
-        //    TSC_ResizeVal(lai::vector);
-        //}
+        TEST_METHOD(TestResizeVal)
+        {
+            TSC_ResizeVal(lai::vector);
+        }
 
         //TEST_METHOD(TestSwap)
         //{

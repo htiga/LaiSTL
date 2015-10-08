@@ -252,11 +252,11 @@ namespace UnitTest
             TSC_ResizeVal(lai::vector);
         }
 
-        //TEST_METHOD(TestSwap)
-        //{
-        //    TSC_Swap(lai::vector);
-        //    TSC_NonmemberSwap(lai::vector, lai::swap);
-        //}
+        TEST_METHOD(TestSwap)
+        {
+            TSC_MemberSwap(lai::vector);
+            TSC_NonMemberSwap(lai::vector, lai::swap);
+        }
 
         //TEST_METHOD(TestRelationalOperators)
         //{

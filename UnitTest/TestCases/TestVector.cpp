@@ -237,10 +237,10 @@ namespace UnitTest
         }
 
 
-        //TEST_METHOD(TestPopBack)
-        //{
-        //    TSC_PopBack(lai::vector, std::vector);
-        //}
+        TEST_METHOD(TestPopBack)
+        {
+            TSC_PopBack(lai::vector);
+        }
 
         //TEST_METHOD(TestResize)
         //{

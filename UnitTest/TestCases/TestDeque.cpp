@@ -448,53 +448,29 @@ namespace UnitTest
             isInsertBeginInvalidatePtrs<LAI_UDEQ, PtrContainer>(pushFront);
         }
 
-    //    TEST_METHOD(TestPopBack)
-    //    {
-    //        TSC_PopBack(lai::deque, std::deque);
+        TEST_METHOD(TestPopBack)
+        {
+            TSC_PopBack(lai::deque);
 
-    //        // test: pop_back can't invalidate pointers or references to the rest of the elements.
+            using PtrContainer = std::deque<LAI_SDEQ::pointer>;
+            auto popBack = [](LAI_SDEQ & c)
+            {
+                c.pop_back();
+            };
+            isEraseEndInvalidatePtrs(popBack);
+        }
 
-    //        LAI_IDEQ iDeq;
-    //        std::deque<LAI_IDEQ::pointer> pointers;
-    //        int size = 15;
-    //        for (int i = 0; i != size; ++i)
-    //        {
-    //            iDeq.push_back(i);
-    //            pointers.push_back(&iDeq.back());
-    //        }
+        TEST_METHOD(TestPopFront)
+        {
+            TSC_PopFront(lai::deque);
 
-    //        while (!iDeq.empty())
-    //        {
-    //            iDeq.pop_back();
-    //            pointers.pop_back();
-    //            for (int i = 0; i != iDeq.size(); ++i)
-    //                IS_TRUE(*pointers[i] == iDeq[i]);
-    //        }
-    //    }
-
-    //    TEST_METHOD(TestPopFront)
-    //    {
-    //        TSC_PopFront(lai::deque, std::deque);
-
-    //        // test: pop_front can't invalidate pointers or references to the rest of the elements.
-
-    //        LAI_IDEQ iDeq;
-    //        std::deque<LAI_IDEQ::pointer> pointers;
-    //        int size = 15;
-    //        for (int i = 0; i != size; ++i)
-    //        {
-    //            iDeq.push_front(i);
-    //            pointers.push_front(&iDeq.front());
-    //        }
-
-    //        while (!iDeq.empty())
-    //        {
-    //            iDeq.pop_front();
-    //            pointers.pop_front();
-    //            for (int i = 0; i != iDeq.size(); ++i)
-    //                IS_TRUE(*pointers[i] == iDeq[i]);
-    //        }
-    //    }
+            using PtrContainer = std::deque<LAI_SDEQ::pointer>;
+            auto popFront = [](LAI_SDEQ & c)
+            {
+                c.pop_front();
+            };
+            isEraseBeginInvalidatePtrs(popFront);
+        }
 
     //    TEST_METHOD(TestSwap)
     //    {

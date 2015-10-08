@@ -472,20 +472,20 @@ namespace UnitTest
             isEraseBeginInvalidatePtrs(popFront);
         }
 
+        TEST_METHOD(TestReize)
+        {
+            TSC_Resize(lai::deque);
+        }
+
+        TEST_METHOD(TestResizeVal)
+        {
+            TSC_ResizeVal(lai::deque);
+        }
+
     //    TEST_METHOD(TestSwap)
     //    {
     //        TSC_Swap(lai::deque);
     //        TSC_NonmemberSwap(lai::deque, lai::swap);
-    //    }
-
-    //    TEST_METHOD(TestReize)
-    //    {
-    //        TSC_Resize(lai::deque);
-    //    }
-
-    //    TEST_METHOD(TestResizeVal)
-    //    {
-    //        TSC_ResizeVal(lai::deque);
     //    }
 
     //    TEST_METHOD(TestRelationalOperators)

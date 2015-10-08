@@ -1003,3 +1003,60 @@ do { \
     std::deque<std::string> stdC1(strData); \
     TSC_PopAux< ContainerTemplate<std::string> >(c1, stdC1, popFront, popFront); \
 } while (false)
+
+// ---- Test for resize ----
+
+#define TSC_Resize(ContainerTemplate) \
+do { \
+    ContainerTemplate<Uncopyable> c; \
+    c.resize(10); \
+    AssertContainerEqual(c, STD_UVEC(10)); \
+    c.resize(5); \
+    AssertContainerEqual(c, STD_UVEC(5)); \
+    c.resize(0); \
+    AssertContainerEqual(c, STD_UVEC(0)); \
+\
+    S_IL strData = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" }; \
+    ContainerTemplate<std::string> c1(strData); \
+    STD_SVEC stdC1(strData); \
+\
+    c1.resize(c1.size()); \
+    stdC1.resize(stdC1.size()); \
+    AssertContainerEqual(c1, stdC1); \
+\
+    c1.resize(c1.size() - 3); \
+    stdC1.resize(stdC1.size() - 3); \
+    AssertContainerEqual(c1, stdC1); \
+\
+    c1.resize(c1.size() + 3); \
+    stdC1.resize(stdC1.size() + 3); \
+    AssertContainerEqual(c1, stdC1); \
+\
+    c1.resize(0); \
+    stdC1.resize(0); \
+    AssertContainerEqual(c1, stdC1); \
+} while (false)
+
+
+#define TSC_ResizeVal(ContainerTemplate) \
+do { \
+    S_IL strData = { "", "a", "bc", "def", "hijk", "lmnop", "lai", "stl", "" }; \
+    ContainerTemplate<std::string> c(strData); \
+    STD_SVEC stdC(strData); \
+\
+    c.resize(c.size(), "a"); \
+    stdC.resize(stdC.size(), "a"); \
+    AssertContainerEqual(c, stdC); \
+\
+    c.resize(c.size() - 3, "a"); \
+    stdC.resize(stdC.size() - 3, "a"); \
+    AssertContainerEqual(c, stdC); \
+\
+    c.resize(c.size() + 3, "b"); \
+    stdC.resize(stdC.size() + 3, "b"); \
+    AssertContainerEqual(c, stdC); \
+\
+    c.resize(0, "c"); \
+    stdC.resize(0, "c"); \
+    AssertContainerEqual(c, stdC); \
+} while (false)

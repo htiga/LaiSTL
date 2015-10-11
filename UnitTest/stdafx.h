@@ -15,6 +15,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #include <vector>
 #include <string>
 #include <initializer_list>
+#include <iterator>
 #include "Utilities\Uncopyable.h"
 #include "Utilities\macros.h"
 #include "Utilities\TestContainerUtilities.h"

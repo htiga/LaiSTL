@@ -23,3 +23,12 @@ void AssertContainerFillWith(const Container & c, const ValueType & val)
         IS_TRUE(*iter++ == val);
     }
 }
+
+
+template<typename InputIt, typename Distance>
+inline InputIt Advance(const InputIt & iter, Distance n)
+{
+    auto copied = iter;
+    std::advance(copied, n);
+    return copied;
+}

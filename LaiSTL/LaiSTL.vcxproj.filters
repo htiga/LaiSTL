@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Deque.h" />
+    <ClInclude Include="List.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

@@ -461,12 +461,12 @@ void TSC_InsertLvalueAux(const DataSet & dataset)
     int i = 0;
     for (const auto & val : dataset)
     {
-        auto iter = c.insert(c.begin() + i, val);
-        IS_TRUE(iter == c.begin() + i);
+        auto iter = c.insert(std::next(c.begin() , i), val);
+        IS_TRUE(iter == std::next(c.begin() , i));
         IS_TRUE(*iter == val);
 
-        auto iter1 = c1.insert(c1.end() - i, val);
-        IS_TRUE(iter1 == (c1.end() - (i + 1)));
+        auto iter1 = c1.insert(std::next(c1.end(), -i), val);
+        IS_TRUE(iter1 == std::next(c1.end(), - (i + 1)));
         IS_TRUE(*iter1 == val);
 
         i += 1;
@@ -498,12 +498,12 @@ void TSC_InsertRvalueAux(DataSet & dataset)
     int i = 0;
     while (expectIt != dataset.end())
     {
-        auto iter = c.insert(c.begin() + i, std::move(*valIt));
-        IS_TRUE(iter == c.begin() + i);
+        auto iter = c.insert(std::next(c.begin(), i), std::move(*valIt));
+        IS_TRUE(iter == std::next(c.begin(), i));
         IS_TRUE(*iter == *expectIt);
 
-        auto iter1 = c1.insert(c1.end() - i, std::move(*valIt1));
-        IS_TRUE(iter1 == (c1.end() - (i + 1)));
+        auto iter1 = c1.insert(std::next(c1.end(), -i), std::move(*valIt1));
+        IS_TRUE(iter1 == std::next(c1.end(), -(i + 1)));
         IS_TRUE(*iter1 == *expectIt);
 
         ++valIt;
@@ -525,12 +525,12 @@ do { \
     ContainerTemplate<Uncopyable> c, c1; \
     for (int i = 0; i != 10; ++i) \
     { \
-        auto iter = c.insert(c.begin() + i, Uncopyable(i)); \
-        IS_TRUE(iter == c.begin() + i); \
+        auto iter = c.insert(std::next(c.begin(), i), Uncopyable(i)); \
+        IS_TRUE(iter == std::next(c.begin(), i)); \
         IS_TRUE(*iter == Uncopyable(i)); \
 \
-        auto iter1 = c1.insert(c1.end() - i, Uncopyable(i)); \
-        IS_TRUE(iter1 == (c1.end() - (i + 1))); \
+        auto iter1 = c1.insert(std::next(c1.end(), -i), Uncopyable(i)); \
+        IS_TRUE(iter1 == std::next(c1.end(), -(i + 1))); \
         IS_TRUE(*iter1 == Uncopyable(i)); \
     } \
 } while (false)
@@ -543,18 +543,18 @@ void TSC_InsertCountAux(const ValueType & val, const std::size_t count)
     int minSize = 4;
     Container c(minSize), c1(minSize);
     std::vector<ValueType> stdC(minSize), stdC1(minSize);
+    int intCount = static_cast<int>(count);
 
     for (const auto & i : il)
     {
-        auto iter = c.insert(c.begin() + i, count, val);
-        IS_TRUE(iter == c.begin() + i);
+        auto iter = c.insert(std::next(c.begin(), i), count, val);
+        IS_TRUE(iter == std::next(c.begin(), i));
 
         stdC.insert(stdC.begin() + i, count, val);
         AssertContainerEqual(c, stdC);
 
-
-        auto iter1 = c1.insert(c1.end() - i, count, val);
-        IS_TRUE(iter1 == (c1.end() - count - i));
+        auto iter1 = c1.insert(std::next(c1.end(), -i), count, val);
+        IS_TRUE(iter1 == std::next(c1.end(), - (intCount + i)));
 
         stdC1.insert(stdC1.end() - i, count, val);
         AssertContainerEqual(c1, stdC1);
@@ -596,8 +596,8 @@ void TSC_InsertRangeAux(const DataSet & dataset, const int offset)
     stdC.insert(stdC.begin(), dataset.begin(), dataset.end());
     AssertContainerEqual(c, stdC);
    
-    iter = c.insert(c.begin() + offset, dataset.begin(), dataset.end());
-    IS_TRUE(iter == c.begin() + offset);
+    iter = c.insert(std::next(c.begin(), offset), dataset.begin(), dataset.end());
+    IS_TRUE(iter == std::next(c.begin(), offset));
     stdC.insert(stdC.begin() + offset, dataset.begin(), dataset.end());
     AssertContainerEqual(c, stdC);
 
@@ -605,7 +605,7 @@ void TSC_InsertRangeAux(const DataSet & dataset, const int offset)
 
     Container c1;
     std::vector<typename Container::value_type> stdC1;
-    auto length = dataset.size();
+    int length = static_cast<int>(dataset.size());
 
     auto iter1 = c1.insert(c1.end(), dataset.begin(), dataset.begin());
     IS_TRUE(iter1 == c1.end());
@@ -613,12 +613,12 @@ void TSC_InsertRangeAux(const DataSet & dataset, const int offset)
     AssertContainerEqual(c1, stdC1);
 
     iter1 = c1.insert(c1.end(), dataset.begin(), dataset.end());
-    IS_TRUE(iter1 == c1.end() - length);
+    IS_TRUE(iter1 == std::next(c1.end(), -length));
     stdC1.insert(stdC1.end(), dataset.begin(), dataset.end());
     AssertContainerEqual(c1, stdC1);
 
-    iter1 = c1.insert(c1.end() - offset, dataset.begin(), dataset.end());
-    IS_TRUE(iter1 == c1.end() - offset - length);
+    iter1 = c1.insert(std::next(c1.end(), -offset), dataset.begin(), dataset.end());
+    IS_TRUE(iter1 == std::next(c1.end(), -offset-length));
     stdC1.insert(stdC1.end() - offset, dataset.begin(), dataset.end());
     AssertContainerEqual(c1, stdC1);
 }
@@ -641,7 +641,7 @@ void TSC_InsertInitListAux(const DataSet & dataset)
 {
     for (const auto & data : dataset)
     {
-        auto length = data.size();
+        int length = static_cast<int>(data.size());
         // test at begin()
 
         Container c;
@@ -652,8 +652,8 @@ void TSC_InsertInitListAux(const DataSet & dataset)
         stdC.insert(stdC.begin(), data);
         AssertContainerEqual(c, stdC);
 
-        iter = c.insert(c.begin() + length, data);
-        IS_TRUE(iter == c.begin() + length);
+        iter = c.insert(std::next(c.begin(), length), data);
+        IS_TRUE(iter == std::next(c.begin(), length));
         stdC.insert(stdC.begin() + length, data);
         AssertContainerEqual(c, stdC);
 
@@ -663,17 +663,15 @@ void TSC_InsertInitListAux(const DataSet & dataset)
         std::vector<typename Container::value_type> stdC1;
 
         auto iter1 = c1.insert(c1.end(), data);
-        IS_TRUE(iter1 == c1.end() - length);
+        IS_TRUE(iter1 == std::next(c1.end(), -length));
         stdC1.insert(stdC1.end(), data);
         AssertContainerEqual(c1, stdC1);
 
-        iter1 = c1.insert(c1.end() - length, data);
-        IS_TRUE(iter1 == c1.end() - length - length);
+        iter1 = c1.insert(std::next(c1.end(), -length), data);
+        IS_TRUE(iter1 == std::next(c1.end(), -length-length));
         stdC1.insert(stdC1.end() - length, data);
         AssertContainerEqual(c1, stdC1);
     }
-
-
 }
 
 
@@ -706,7 +704,7 @@ do { \
     AssertContainerEqual(c, stdC); \
 \
     iter = c.emplace(c.end()); \
-    IS_TRUE(iter == c.end() - 1); \
+    IS_TRUE(iter == std::next(c.end(), -1)); \
     stdC.emplace(stdC.end()); \
     AssertContainerEqual(c, stdC); \
 \
@@ -719,29 +717,29 @@ do { \
     AssertContainerEqual(c1, stdC1); \
 \
     iter1 = c1.emplace(c1.end(), "lai"); \
-    IS_TRUE(iter1 == c1.end() - 1); \
+    IS_TRUE(iter1 == std::next(c1.end(), -1)); \
     stdC1.emplace(stdC1.end(), "lai"); \
     AssertContainerEqual(c1, stdC1); \
 \
-    iter1 = c1.emplace(c1.begin() + 1, 3, 'a'); \
-    IS_TRUE(iter1 == c1.begin() + 1); \
+    iter1 = c1.emplace(std::next(c1.begin(), 1), 3, 'a'); \
+    IS_TRUE(iter1 == std::next(c1.begin(), 1)); \
     stdC1.emplace(stdC1.begin() + 1, 3, 'a'); \
     AssertContainerEqual(c1, stdC1); \
 \
     std::string str = "tiga"; \
-    iter1 = c1.emplace(c1.end() - 1, str); \
-    IS_TRUE(iter1 == c1.end() - 2); \
+    iter1 = c1.emplace( std::next(c1.end(), -1), str); \
+    IS_TRUE(iter1 == std::next(c1.end(), -2)); \
     stdC1.emplace(stdC1.end() - 1, str); \
     AssertContainerEqual(c1, stdC1); \
 \
-    iter1= c1.emplace(c1.begin() + 2, std::move(str)); \
-    IS_TRUE(iter1 == c1.begin() + 2); \
+    iter1= c1.emplace(std::next(c1.begin(), 2), std::move(str)); \
+    IS_TRUE(iter1 == std::next(c1.begin(), 2)); \
     stdC1.emplace(stdC1.begin() + 2, "tiga"); \
     AssertContainerEqual(c1, stdC1); \
 \
     std::initializer_list<char> il = {'l', 'a', 'i', 's', 't', 'l'}; \
-    iter1 = c1.emplace(c1.end() - 2, il); \
-    IS_TRUE(iter1 == c1.end() - 3); \
+    iter1 = c1.emplace(std::next(c1.end(), -2), il); \
+    IS_TRUE(iter1 == std::next(c1.end(), -3)); \
     stdC1.emplace(stdC1.end() - 2, il); \
     AssertContainerEqual(c1, stdC1); \
 } while (false)
@@ -760,18 +758,18 @@ do { \
     stdC.erase(stdC.begin());            \
     AssertContainerEqual(c, stdC);       \
                                          \
-    iter = c.erase(c.end() - 1);         \
+    iter = c.erase(std::next(c.end(), -1));\
     IS_TRUE(iter == c.end());            \
     stdC.erase(stdC.end() - 1);          \
     AssertContainerEqual(c, stdC);       \
                                          \
-    iter = c.erase(c.begin() + 3);       \
-    IS_TRUE(iter == c.begin() + 3);      \
+    iter = c.erase(std::next(c.begin(), 3)); \
+    IS_TRUE(iter == std::next(c.begin(), 3));\
     stdC.erase(stdC.begin() + 3);        \
     AssertContainerEqual(c, stdC);       \
                                          \
-    iter = c.erase(c.end() - 3);         \
-    IS_TRUE(iter == c.end() - 2);        \
+    iter = c.erase(std::next(c.end(), -3)); \
+    IS_TRUE(iter == std::next(c.end(), -2));\
     stdC.erase(stdC.end() - 3);          \
     AssertContainerEqual(c, stdC);       \
 } while (false)
@@ -788,23 +786,23 @@ do { \
     stdC.erase(stdC.begin(), stdC.begin());            \
     AssertContainerEqual(c, stdC);                     \
                                                        \
-    iter = c.erase(c.begin(), c.begin() + 1);          \
+    iter = c.erase(c.begin(), std::next(c.begin(), 1));  \
     IS_TRUE(iter == c.begin());                        \
     stdC.erase(stdC.begin(), stdC.begin() + 1);        \
     AssertContainerEqual(c, stdC);                     \
                                                        \
-    iter = c.erase(c.end() - 1, c.end());              \
+    iter = c.erase(std::next(c.end(), -1), c.end());     \
     IS_TRUE(iter == c.end());                          \
     stdC.erase(stdC.end() - 1, stdC.end());            \
     AssertContainerEqual(c, stdC);                     \
                                                        \
-    iter = c.erase(c.begin() + 1, c.begin() + 3);      \
-    IS_TRUE(iter == c.begin() + 1);                    \
+    iter = c.erase(std::next(c.begin(), 1), std::next(c.begin(), 3)); \
+    IS_TRUE(iter == std::next(c.begin(), 1));            \
     stdC.erase(stdC.begin() + 1, stdC.begin() + 3);    \
     AssertContainerEqual(c, stdC);                     \
                                                        \
-    iter = c.erase(c.end() - 3, c.end() - 1);          \
-    IS_TRUE(iter == c.end() - 1);                      \
+    iter = c.erase(std::next(c.end(), -3), std::next(c.end(), -1)); \
+    IS_TRUE(iter == std::next(c.end(), -1));             \
     stdC.erase(stdC.end() - 3, stdC.end() - 1);        \
     AssertContainerEqual(c, stdC);                     \
                                                        \

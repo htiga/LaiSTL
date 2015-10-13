@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
-#include "Deque.h"
+#include <iostream>
+#include "List.h"
+
 int main()
 {
     {
     }
+
     _CrtDumpMemoryLeaks();
     return 0;
 }

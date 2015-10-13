@@ -217,7 +217,7 @@ namespace UnitTest
         {
             LAI_ILST a, b;
 
-            auto comp = std::greater<int>();
+            auto comp = [](int i, int j) { return i > j; };
 
             a.merge(b, comp);
             AssertContainerEqual(a, I_IL{});

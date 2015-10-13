@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 
 template<typename Container1, typename Container2>
 void AssertContainerEqual(const Container1 & tested, const Container2 & expected)
@@ -22,13 +21,4 @@ void AssertContainerFillWith(const Container & c, const ValueType & val)
     {
         IS_TRUE(*iter++ == val);
     }
-}
-
-
-template<typename InputIt, typename Distance>
-inline InputIt Advance(const InputIt & iter, Distance n)
-{
-    auto copied = iter;
-    std::advance(copied, n);
-    return copied;
 }

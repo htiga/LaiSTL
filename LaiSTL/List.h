@@ -458,7 +458,7 @@ namespace lai
 
         void merge(list & rhs)
         {
-            merge(std::move(rhs), std::less<>());
+            merge(rhs, std::less<>());
         }
 
         template<typename Compare>

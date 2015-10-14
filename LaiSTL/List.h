@@ -174,7 +174,7 @@ namespace lai
             return *this;
         }
 
-        list & operator=(list && rhs) noexcept
+        list & operator=(list && rhs)
         {
             list moved(std::move(rhs));
             swap(moved);

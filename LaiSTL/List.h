@@ -149,7 +149,7 @@ namespace lai
             insertRange(end(), rhs.begin(), rhs.end());
         }
 
-        list(list && rhs) noexcept :
+        list(list && rhs) :
             myHead(std::move(rhs.myHead)),
             mySize(std::move(rhs.mySize))
         {
@@ -174,7 +174,7 @@ namespace lai
             return *this;
         }
 
-        list & operator=(list && rhs)
+        list & operator=(list && rhs) noexcept
         {
             list moved(std::move(rhs));
             swap(moved);

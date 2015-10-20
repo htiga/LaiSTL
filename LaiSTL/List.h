@@ -666,9 +666,10 @@ namespace lai
             auto node = pos.node;
             auto start = node->prev;
             auto temp = start;
+            size_type count = 0;
             try
             {
-                for (auto iter = first; iter != last; ++iter)
+                for (auto iter = first; iter != last; ++iter, ++count)
                 {
                     auto newNode = createNode(temp, node, *iter);
                     temp->next = newNode;
@@ -688,7 +689,7 @@ namespace lai
                 }
                 throw;
             }
-            mySize +=  std::distance(first, last);
+            mySize +=  count;
             return iterator(start->next);
         }
 

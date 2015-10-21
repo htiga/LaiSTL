@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include <functional>
 // TSC means "Test sequence container"
 
 
@@ -1152,4 +1153,117 @@ do { \
     IS_TRUE(c <= c1); \
     IS_FALSE(c > c1); \
     IS_TRUE(c >= c1); \
+} while (false)
+
+
+// Test for sort
+
+
+static std::initializer_list<I_IL> G_TestedDataForSort =
+{
+    {},
+    { 0 },
+    { 0, 0 },
+    { 0, 0, 0 },
+    { 0, 1 },
+    { 1, 0 },
+    { 0, 1, 2 },
+    { 0, 2, 1 },
+    { 1, 0, 2 },
+    { 1, 2, 0 },
+    { 2, 0, 1 },
+    { 2, 1, 0 },
+    { 0, 1, 1 },
+    { 1, 0, 1 },
+    { 1, 1, 0 },
+    { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+    { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 },
+    { 42, 9, 17, 54, 602, -3, 54, 999, -11 },
+    { -11, -3, 9, 17, 42, 54, 54, 602, 999 },
+};
+
+
+template<typename ContainerForInt>
+void TSC_MemberSortAux()
+{
+    static std::initializer_list<I_IL> SortedData =
+    {
+        {},
+        { 0 },
+        { 0, 0 },
+        { 0, 0, 0 },
+        { 0, 1 },
+        { 0, 1 },
+        { 0, 1, 2 },
+        { 0, 1, 2 },
+        { 0, 1, 2 },
+        { 0, 1, 2 },
+        { 0, 1, 2 },
+        { 0, 1, 2 },
+        { 0, 1, 1 },
+        { 0, 1, 1 },
+        { 0, 1, 1 },
+        { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+        { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+        { -11, -3, 9, 17, 42, 54, 54, 602, 999 },
+        { -11, -3, 9, 17, 42, 54, 54, 602, 999 },
+    };
+
+    auto testIter = G_TestedDataForSort.begin();
+    auto stdIter = SortedData.begin();
+    while (testIter != G_TestedDataForSort.end())
+    {
+        ContainerForInt il = *testIter++;
+        il.sort();
+        AssertContainerEqual(il, *stdIter++);
+    }
+}
+
+
+#define TSC_MemberSort(ContainerTemplate) \
+do { \
+    TSC_MemberSortAux< ContainerTemplate<int> >(); \
+} while (false)
+
+
+template<typename ContainerForInt>
+void TSC_MemberSortByAux()
+{
+    std::initializer_list<I_IL> SortedData =
+    {
+        {},
+        { 0 },
+        { 0, 0 },
+        { 0, 0, 0 },
+        { 1, 0 },
+        { 1, 0 },
+        { 2, 1, 0 },
+        { 2, 1, 0 },
+        { 2, 1, 0 },
+        { 2, 1, 0 },
+        { 2, 1, 0 },
+        { 2, 1, 0 },
+        { 1, 1, 0 },
+        { 1, 1, 0 },
+        { 1, 1, 0 },
+        { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 },
+        { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 },
+        { 999, 602, 54, 54, 42, 17, 9, -3, -11 },
+        { 999, 602, 54, 54, 42, 17, 9, -3, -11 },
+    };
+
+    auto testIter = G_TestedDataForSort.begin();
+    auto stdIter = SortedData.begin();
+    while (testIter != G_TestedDataForSort.end())
+    {
+        ContainerForInt il = *testIter++;
+        il.sort(std::greater_equal<>());
+        AssertContainerEqual(il, *stdIter++);
+    }
+}
+
+
+#define TSC_MemberSortBy(ContainerTemplate) \
+do { \
+    TSC_MemberSortByAux< ContainerTemplate<int> >(); \
 } while (false)

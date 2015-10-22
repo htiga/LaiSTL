@@ -1267,3 +1267,217 @@ void TSC_MemberSortByAux()
 do { \
     TSC_MemberSortByAux< ContainerTemplate<int> >(); \
 } while (false)
+
+
+// Test for merge
+
+#define TSC_Merge(ContainerTemplate) \
+do { \
+    ContainerTemplate<int> a, b; \
+                                                               \
+    a.merge(b);                                                \
+    AssertContainerEqual(a, I_IL{});                           \
+    AssertContainerEqual(b, I_IL{});                           \
+                                                               \
+    a = { 1,2,3,7,8,9 };                                       \
+    a.merge(b);                                                \
+    AssertContainerEqual(a, I_IL{ 1,2,3,7,8,9 });              \
+    AssertContainerEqual(b, I_IL{});                           \
+                                                               \
+    a = {};                                                    \
+    b = { 1,2,3,7,8,9 };                                       \
+    a.merge(b);                                                \
+    AssertContainerEqual(a, I_IL{ 1,2,3,7,8,9 });              \
+    AssertContainerEqual(b, I_IL{});                           \
+                                                               \
+    b = { 4,5 };                                               \
+    a.merge(b);                                                \
+    AssertContainerEqual(a, I_IL{ 1,2,3,4,5,7,8,9 });          \
+    AssertContainerEqual(b, I_IL{});                           \
+                                                               \
+    b = { 0, 6, 10 };                                          \
+    a.merge(b);                                                \
+    AssertContainerEqual(a, I_IL{ 0,1,2,3,4,5,6,7,8,9,10 });   \
+    AssertContainerEqual(b, I_IL{});                           \
+                                                               \
+    b = { 0,1,2,3,4,5,6,7,8,9,10 }; \
+    a.merge(b); \
+    AssertContainerEqual(a, I_IL{ 0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10 }); \
+    AssertContainerEqual(b, I_IL{}); \
+} while (false)
+
+
+#define TSC_MergeBy(ContainerTemplate) \
+do { \
+    ContainerTemplate<int> a, b;                            \
+                                                            \
+    auto comp = [](int i, int j) { return i >= j; };        \
+                                                            \
+    a.merge(b, comp);                                       \
+    AssertContainerEqual(a, I_IL{});                        \
+    AssertContainerEqual(b, I_IL{});                        \
+                                                            \
+    a = { 9,8,7,3,2,1 };                                    \
+    a.merge(b, comp);                                       \
+    AssertContainerEqual(a, I_IL{ 9,8,7,3,2,1 });           \
+    AssertContainerEqual(b, I_IL{});                        \
+                                                            \
+    a = {};                                                 \
+    b = { 9,8,7,3,2,1 };                                    \
+    a.merge(b, comp);                                       \
+    AssertContainerEqual(a, I_IL{ 9,8,7,3,2,1 });           \
+    AssertContainerEqual(b, I_IL{});                        \
+                                                            \
+    b = { 5,4 };                                            \
+    a.merge(b, comp);                                       \
+    AssertContainerEqual(a, I_IL{ 9,8,7,5,4,3,2,1 });       \
+    AssertContainerEqual(b, I_IL{});                        \
+                                                            \
+    b = { 10, 6, 0 };                                       \
+    a.merge(b, comp);                                       \
+    AssertContainerEqual(a, I_IL{ 10,9,8,7,6,5,4,3,2,1,0 });\
+    AssertContainerEqual(b, I_IL{});                        \
+\
+    b = { 10,9,8,7,6,5,4,3,2,1,0 }; \
+    a.merge(b, comp); \
+    AssertContainerEqual(a, I_IL{ 10,10,9,9,8,8,7,7,6,6,5,5,4,4,3,3,2,2,1,1,0,0 }); \
+    AssertContainerEqual(b, I_IL{}); \
+} while (false)
+
+
+// Test for remove
+
+#define TSC_Remove(ContainerTemplate) \
+do { \
+    ContainerTemplate<int> a;                                  \
+                                                               \
+    a.remove(0);                                               \
+    AssertContainerEqual(a, I_IL{});                           \
+                                                               \
+    a = { 0,0,0,0 };                                           \
+    a.remove(1);                                               \
+    AssertContainerEqual(a, I_IL{ 0,0,0,0 });                  \
+                                                               \
+    a.remove(0);                                               \
+    AssertContainerEqual(a, I_IL{});                           \
+                                                               \
+    a = { 0, 1, 1, 2, 3, 0, 4, 5, 0, 5, 5, 5 };                \
+    a.remove(0);                                               \
+    AssertContainerEqual(a, I_IL{ 1, 1, 2, 3, 4, 5, 5, 5, 5 });\
+                                                               \
+    a.remove(1);                                               \
+    AssertContainerEqual(a, I_IL{ 2, 3, 4, 5, 5, 5, 5 });      \
+                                                               \
+    a.remove(5);                                               \
+    AssertContainerEqual(a, I_IL{ 2, 3, 4 });                  \
+} while (false)
+
+
+#define TSC_RemoveIf(ContainerTemplate) \
+do { \
+    ContainerTemplate<int> a;                          \
+                                                       \
+    a.remove_if([](int i) {return true; });            \
+    AssertContainerEqual(a, I_IL{});                   \
+                                                       \
+    a = { 0,1,2,3,4,5,6,7,8,9 };                       \
+                                                       \
+    a.remove_if([](int i) {return i > 7; });           \
+    AssertContainerEqual(a, I_IL{ 0,1,2,3,4,5,6,7 });  \
+                                                       \
+    a.remove_if([](int i) { return i < 2; });          \
+    AssertContainerEqual(a, I_IL{ 2,3,4,5,6,7 });      \
+                                                       \
+    a.remove_if([](int i) { return false; });          \
+    AssertContainerEqual(a, I_IL{ 2,3,4,5,6,7 });      \
+                                                       \
+    a.remove_if([](int i) { return i % 2 == 0; });     \
+    AssertContainerEqual(a, I_IL{ 3,5,7 });            \
+                                                       \
+    a.remove_if([](int i) { return true; });           \
+    AssertContainerEqual(a, I_IL{});                   \
+} while (false)
+
+
+// Test for reverse
+
+#define TSC_Reverse(ContainerTemplate) \
+do { \
+    ContainerTemplate<int> il = {};                         \
+                                                            \
+    il.reverse();                                           \
+    AssertContainerEqual(il, I_IL{});                       \
+                                                            \
+    il = { 0 };                                             \
+    il.reverse();                                           \
+    AssertContainerEqual(il, I_IL{ 0 });                    \
+                                                            \
+    il = { 0, 0 };                                          \
+    il.reverse();                                           \
+    AssertContainerEqual(il, I_IL{ 0, 0 });                 \
+                                                            \
+    il = { 1, 2, 3, 0, 3, 2, 1 };                           \
+    il.reverse();                                           \
+    AssertContainerEqual(il, I_IL{ 1, 2, 3, 0, 3, 2, 1 });  \
+    il.reverse();                                           \
+    AssertContainerEqual(il, I_IL{ 1, 2, 3, 0, 3, 2, 1 });  \
+                                                            \
+    il = { 1,2,3,4,5,6,7,8,9 };                             \
+    il.reverse();                                           \
+    AssertContainerEqual(il, I_IL{ 9,8,7,6,5,4,3,2,1 });    \
+    il.reverse();                                           \
+    AssertContainerEqual(il, I_IL{ 1,2,3,4,5,6,7,8,9 });    \
+} while (false)
+
+
+// Test for unique
+
+#define TSC_Unique(ContainerTemplate) \
+do {                                                                    \
+    ContainerTemplate<int> a;                                           \
+                                                                        \
+    a.unique();                                                         \
+    AssertContainerEqual(a, I_IL{});                                    \
+                                                                        \
+    a = { 1 };                                                          \
+    a.unique();                                                         \
+    AssertContainerEqual(a, I_IL{ 1 });                                 \
+                                                                        \
+    a = { 1, 1 };                                                       \
+    a.unique();                                                         \
+    AssertContainerEqual(a, I_IL{ 1 });                                 \
+                                                                        \
+    a = { 1,1,1,1,1,1 };                                                \
+    a.unique();                                                         \
+    AssertContainerEqual(a, I_IL{ 1 });                                 \
+                                                                        \
+    a = { 1, 1, 0, 1 };                                                 \
+    a.unique();                                                         \
+    AssertContainerEqual(a, I_IL{ 1,0,1 });                             \
+                                                                        \
+    a = { 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 0, 0, 1, 1, 2, 2, 3, 3 }; \
+    a.unique();                                                         \
+    AssertContainerEqual(a, I_IL{ 0,1,2,3,0,1,2,3 });                   \
+} while (false)
+
+
+#define TSC_UniqueIf(ContainerTemplate) \
+do {                                                      \
+    ContainerTemplate<int> a;                             \
+                                                          \
+    a.unique([](int i, int j) { return true; });          \
+    AssertContainerEqual(a, I_IL{});                      \
+                                                          \
+    a = { 0, 1,2, 4,3, 5,6, 8,7, 9 };                     \
+    a.unique([](int i, int j) { return i > j; });         \
+    AssertContainerEqual(a, I_IL{ 0, 1,2, 4, 5,6, 8, 9 });\
+                                                          \
+    a.unique([](int i, int j) { return i == j - 1; });    \
+    AssertContainerEqual(a, I_IL{ 0, 2, 4, 6, 8 });       \
+                                                          \
+    a.unique([](int i, int j) { return false; });         \
+    AssertContainerEqual(a, I_IL{ 0, 2, 4, 6, 8 });       \
+                                                          \
+    a.unique([](int i, int j) { return true; });          \
+    AssertContainerEqual(a, I_IL{ 0 });                   \
+} while (false)

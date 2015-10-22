@@ -3,7 +3,8 @@
 template<typename Container1, typename Container2>
 void AssertContainerEqual(const Container1 & tested, const Container2 & expected)
 {
-    IS_TRUE(tested.size() == expected.size());
+    IS_TRUE(std::distance(tested.begin(), tested.end()) ==
+        std::distance(expected.begin(), expected.end()));
     auto iter1 = tested.begin();
     auto iter2 = expected.begin();
     while (iter1 != tested.end())

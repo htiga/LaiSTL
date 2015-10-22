@@ -193,7 +193,7 @@ namespace UnitTest
             TSC_MergeBy(lai::list);
         }
 
-        TEST_METHOD(TestSplice1)
+        TEST_METHOD(TestSpliceAll)
         {
             LAI_ILST a, b;
 
@@ -222,7 +222,7 @@ namespace UnitTest
             AssertContainerEqual(b, I_IL{});
         }
 
-        TEST_METHOD(TestSplice2)
+        TEST_METHOD(TestSpliceOne)
         {
             LAI_ILST a, b;
 
@@ -258,7 +258,7 @@ namespace UnitTest
             AssertContainerEqual(a, I_IL{ 1,4,2,3 });
         }
 
-        TEST_METHOD(TestSplice3)
+        TEST_METHOD(TestSpliceAfterRange)
         {
             LAI_ILST a, b;
 

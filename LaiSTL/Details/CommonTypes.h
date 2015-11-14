@@ -9,5 +9,15 @@ namespace lai
         {
             // empty struct for unused argument
         };
+
+        struct TrueType
+        {
+            // empty struct for dispatch
+        };
+
+        struct FalseType
+        {
+            // empty struct for dispatch
+        };
     }
 }

@@ -16,6 +16,7 @@ void TSC_DefaultConstructorAux()
     IS_TRUE(c.cbegin() == c.cend());
 }
 
+
 #define TSC_DefaultConstructor(ContainerTemplate) \
 do { \
     TSC_DefaultConstructorAux< ContainerTemplate<int> >(); \

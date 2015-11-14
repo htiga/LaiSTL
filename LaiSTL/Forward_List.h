@@ -12,8 +12,7 @@ namespace lai
     template<typename ValueType>
     struct FListNode
     {
-        // To support before_begin, next must be the before_first field.
-        // Then before_begin shall be the address of before_first node.
+        // To support before_begin, next must be the first field.
         FListNode * next;
         ValueType value;
     };

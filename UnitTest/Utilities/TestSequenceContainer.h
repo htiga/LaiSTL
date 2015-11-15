@@ -170,9 +170,9 @@ do { \
     };                                                      \
     TSC_MoveConstructorAux< ContainerTemplate<std::string> >(strData); \
 \
-    ContainerTemplate<Uncopyable> c(10); \
+    ContainerTemplate<Uncopyable> c; \
     ContainerTemplate<Uncopyable> moved(std::move(c)); \
-    AssertContainerEqual(moved, STD_UVEC(10)); \
+    AssertContainerEqual(moved, STD_UVEC()); \
 } while (false)
 
 

@@ -245,9 +245,8 @@ namespace lai
             {
                 if (myHead)
                 {
-                    deallocateTree(root());
-                    deallocateNode(myHead);
-                    mySize = 0;
+                    clear();
+                    deallocateHead(myHead);
                     myHead = nullptr;
                 }
             }
@@ -599,7 +598,8 @@ namespace lai
 
             size_type count(const key_type & key) const
             {
-                return std::distance(equal_range(key));
+                PairCc range = equal_range(key);
+                return std::distance(range.first, range.second);
             }
 
             iterator find(const key_type & key)
@@ -641,9 +641,6 @@ namespace lai
             {
                 return iterator(upperBoundAux(key));
             }
-
-            // todo : find
-            // todo : uppper_bound
 
             // comparers
 
@@ -692,6 +689,11 @@ namespace lai
                 nodeAlloc.deallocate(node, 1);
             }
 
+            void deallocateHead(NodePtr head)
+            {
+                nodeAlloc.deallocate(head, 1);
+            }
+        
             void deallocateTree(NodePtr aRoot)
             {
                 while (!isNil(aRoot))
@@ -857,16 +859,18 @@ namespace lai
             {
                 const_iterator before;
                 // try insert before begin()
-                if (pos == begin() && !compareValues(*pos, value))
+                if (pos == begin())
                 {
-                    return insertAt(true, pos.myNode, std::forward<TValue>(value), node);
+                    if (!compareValues(*pos, value))
+                        return insertAt(true, pos.myNode, std::forward<TValue>(value), node);
                 }
                 // try insert before end()
-                else if (pos == end() && !compareValues(value, rightMost()->value))
+                else if (pos == end())
                 {
-                    return insertAt(false, rightMost(), std::forward<TValue>(value), node);
+                    if (!compareValues(value, rightMost()->value))
+                        return insertAt(false, rightMost(), std::forward<TValue>(value), node);
                 }
-                // try insert before <pos>
+                // <pos> is not begin() nor end(), try insert before <pos>
                 else if (!compareValues(value, *--(before = pos)) && !compareValues(*pos, value))
                 {
                     if (isNil(before.myNode->right))
@@ -874,10 +878,9 @@ namespace lai
                     else
                         return insertAt(true, pos.myNode, std::forward<TValue>(value), node);
                 }
-                else
-                { // bad hint <pos>, call insertNoHint
-                    return insertNoHint(std::forward<TValue>(value), node).first;
-                }
+
+                // bad hint <pos>, call insertNoHint
+                return insertNoHint(std::forward<TValue>(value), node).first;
             }
 
             // insertHint only if key is unique
@@ -886,14 +889,16 @@ namespace lai
             {
                 const_iterator before;
                 // try insert before begin()
-                if (pos == begin() && compareValues(value, *pos))
+                if (pos == begin())
                 {
-                    return insertAt(true, pos.myNode, std::forward<TValue>(value), node);
+                    if (compareValues(value, *pos))
+                        return insertAt(true, pos.myNode, std::forward<TValue>(value), node);
                 }
                 // try insert before end()
-                else if (pos == end() && compareValues(rightMost()->value, value))
+                else if (pos == end())
                 {
-                    return insertAt(false, rightMost(), std::forward<TValue>(value), node);
+                    if (compareValues(rightMost()->value, value))
+                        return insertAt(false, rightMost(), std::forward<TValue>(value), node);
                 }
                 // try insert before <pos>
                 else if (compareValues(*--(before = pos), value) && compareValues(value, *pos))
@@ -903,10 +908,9 @@ namespace lai
                     else
                         return insertAt(true, pos.myNode, std::forward<TValue>(value), node);
                 }
-                else
-                { // bad hint <pos>, call insertNoHint
-                    return insertNoHint(std::forward<TValue>(value), node).first;
-                }
+
+                // bad hint <pos>, call insertNoHint
+                return insertNoHint(std::forward<TValue>(value), node).first;
             }
 
             // insert <node>
@@ -976,6 +980,7 @@ namespace lai
             iterator insertAt(bool addToLeft, NodePtr parentNode, TValue && value, TNode node)
             {
                 NodePtr newNode = createNodeIfNil(node, std::forward<TValue>(value));
+                NodePtr returnedNode = newNode;
                 ++mySize;
                 // add newNode to its position
                 newNode->parent = parentNode;
@@ -1050,7 +1055,7 @@ namespace lai
                     }
                 }
                 root()->color = TreeColor::BLACK;
-                return iterator(newNode);
+                return iterator(returnedNode);
             }
 
             NodePtr findAux(const key_type & key) const
@@ -1156,6 +1161,50 @@ namespace lai
         void swap(Tree<TreeTraits> & lhs, Tree<TreeTraits> & rhs)
         {
             lhs.swap(rhs);
+        }
+
+        template<typename TreeTraits>
+        inline bool operator==(
+            const Tree<TreeTraits> & lhs, const Tree<TreeTraits> & rhs)
+        {
+            return (lhs.size() == rhs.size()) &&
+                (std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin()));
+        }
+
+        template<typename TreeTraits>
+        inline bool operator!=(
+            const Tree<TreeTraits> & lhs, const Tree<TreeTraits> & rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        template<typename TreeTraits>
+        inline bool operator<(
+            const Tree<TreeTraits> & lhs, const Tree<TreeTraits> & rhs)
+        {
+            return std::lexicographical_compare(lhs.cbegin(), lhs.cend(),
+                rhs.cbegin(), rhs.cend());
+        }
+
+        template<typename TreeTraits>
+        inline bool operator<=(
+            const Tree<TreeTraits> & lhs, const Tree<TreeTraits> & rhs)
+        {
+            return !(rhs < lhs);
+        }
+
+        template<typename TreeTraits>
+        inline bool operator>(
+            const Tree<TreeTraits> & lhs, const Tree<TreeTraits> & rhs)
+        {
+            return !(lhs <= rhs);
+        }
+
+        template<typename TreeTraits>
+        inline bool operator>=(
+            const Tree<TreeTraits> & lhs, const Tree<TreeTraits> & rhs)
+        {
+            return !(lhs < rhs);
         }
     }
 }

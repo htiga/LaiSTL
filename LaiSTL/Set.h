@@ -54,7 +54,21 @@ namespace lai
             MyBase::operator=(std::move(rhs));
             return *this;
         }
+
+        set & operator=(std::initializer_list<value_type> iList)
+        {
+            MyBase::operator=(iList);
+            return *this;
+        }
     };
+
+
+    template<typename TKey, typename TCompare, typename Allocator>
+    inline void swap(
+        set<TKey, TCompare, Allocator> & lhs, set<TKey, TCompare, Allocator> & rhs)
+    {
+        lhs.swap(rhs);
+    }
 
 
     template<typename TKey, typename TCompare, typename Allocator>
@@ -105,5 +119,31 @@ namespace lai
             MyBase::operator=(std::move(rhs));
             return *this;
         }
+
+        multiset & operator=(std::initializer_list<value_type> iList)
+        {
+            MyBase::operator=(iList);
+            return *this;
+        }
+
+        using MyBase::insert;
+
+        iterator insert(const value_type & value)
+        {
+            return MyBase::insert(value).first;
+        }
+
+        iterator insert(value_type && value)
+        {
+            return MyBase::insert(std::move(value)).first;
+        }
     };
+
+
+    template<typename TKey, typename TCompare, typename Allocator>
+    inline void swap(
+        multiset<TKey, TCompare, Allocator> & lhs, multiset<TKey, TCompare, Allocator> & rhs)
+    {
+        lhs.swap(rhs);
+    }
 }

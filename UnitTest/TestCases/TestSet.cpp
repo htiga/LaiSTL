@@ -97,15 +97,9 @@ namespace UnitTest
             TSC_DefaultConstructor(lai::set);
 
             auto greater = std::greater<>();
-
-            lai::set<int, std::greater<>> iset(greater);
-            TestCtorHelper(iset);
-
-            lai::set<std::string, std::greater<>> sset(greater);
-            TestCtorHelper(sset);
-
-            lai::set<Uncopyable, std::greater<>> uset(greater);
-            TestCtorHelper(uset);
+            TSC_DefaultConstructorAux<lai::set<int, std::greater<>>>();
+            TSC_DefaultConstructorAux<lai::set<std::string, std::greater<>>>();
+            TSC_DefaultConstructorAux<lai::set<Uncopyable, std::greater<>>>();
         }
 
         TEST_METHOD(TestRangeConstructor)

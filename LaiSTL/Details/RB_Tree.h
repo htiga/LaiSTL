@@ -42,7 +42,7 @@ namespace lai
             using difference_type   = std::ptrdiff_t;
         private:
             using Node     = TreeNode<value_type>;
-            using NodePtr  = typename Node::NodePtr;
+            using NodePtr  = Node *;
             NodePtr myNode = nullptr;
         public:
             constexpr TreeIterator() noexcept = default;

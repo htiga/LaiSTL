@@ -787,7 +787,7 @@ namespace lai
             }
 
             template<typename TValue>
-            NodePtr createNodeIfNil(NodePtr node, TValue && value)
+            NodePtr createNodeIfNil(NodePtr node, TValue &&)
             {
                 return node;
             }

@@ -137,6 +137,12 @@ namespace lai
         {
             return MyBase::insert(std::move(value)).first;
         }
+
+        template<typename ... Args>
+        iterator emplace(Args && ... args)
+        {
+            return MyBase::emplace(std::forward<Args>(args)...).first;
+        }
     };
 
 

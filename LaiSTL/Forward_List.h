@@ -130,7 +130,7 @@ namespace lai
             insertAfterRange(before_begin(), rhs.begin(), rhs.end());
         }
 
-        forward_list(forward_list && rhs) :
+        forward_list(forward_list && rhs) noexcept :
             myHead(std::move(rhs.myHead))
         {
             rhs.myHead = NodePtr();
@@ -156,7 +156,7 @@ namespace lai
             return *this;
         }
 
-        forward_list & operator=(forward_list && rhs)
+        forward_list & operator=(forward_list && rhs) noexcept
         {
             forward_list copied = std::move(rhs);
             swap(copied);

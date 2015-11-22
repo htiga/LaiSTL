@@ -173,6 +173,10 @@ do { \
     ContainerTemplate<Uncopyable> c; \
     ContainerTemplate<Uncopyable> moved(std::move(c)); \
     AssertContainerEqual(moved, STD_UVEC()); \
+\
+    IS_TRUE(std::is_nothrow_move_constructible<ContainerTemplate<Uncopyable>>::value); \
+    IS_TRUE(std::is_nothrow_move_constructible<ContainerTemplate<int>>::value); \
+    IS_TRUE(std::is_nothrow_move_constructible<ContainerTemplate<std::string>>::value); \
 } while (false)
 
 

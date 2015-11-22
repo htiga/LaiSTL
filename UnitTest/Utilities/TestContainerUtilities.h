@@ -7,7 +7,7 @@ void AssertContainerEqual(const Container1 & tested, const Container2 & expected
         std::distance(expected.begin(), expected.end()));
     auto iter1 = tested.begin();
     auto iter2 = expected.begin();
-    while (iter1 != tested.end())
+    while (iter2 != expected.end())
     {
         IS_TRUE(*iter1++ == *iter2++);
     }

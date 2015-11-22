@@ -78,7 +78,7 @@ namespace lai
             return *this;
         }
 
-        vector & operator=(vector && rhs)
+        vector & operator=(vector && rhs) noexcept
         {
             vector moveCopied(std::move(rhs));
             swap(moveCopied);

@@ -40,7 +40,7 @@ namespace lai
         set(const set & rhs) :
             MyBase(rhs) { }
 
-        set(set && rhs) :
+        set(set && rhs) noexcept :
             MyBase(std::move(rhs)) { }
 
         set & operator=(const set & rhs)
@@ -49,7 +49,7 @@ namespace lai
             return *this;
         }
 
-        set & operator=(set && rhs)
+        set & operator=(set && rhs) noexcept
         {
             MyBase::operator=(std::move(rhs));
             return *this;
@@ -105,7 +105,7 @@ namespace lai
         multiset(const multiset & rhs) :
             MyBase(rhs) { }
 
-        multiset(multiset && rhs) :
+        multiset(multiset && rhs) noexcept :
             MyBase(std::move(rhs)) { }
 
         multiset & operator=(const multiset & rhs)
@@ -114,7 +114,7 @@ namespace lai
             return *this;
         }
 
-        multiset & operator=(multiset && rhs)
+        multiset & operator=(multiset && rhs) noexcept
         {
             MyBase::operator=(std::move(rhs));
             return *this;

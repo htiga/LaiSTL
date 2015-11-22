@@ -256,6 +256,10 @@ do { \
     ContainerTemplate<Uncopyable> moved; \
     moved = std::move(c);                \
     AssertContainerEqual(moved, STD_UVEC()); \
+\
+    IS_TRUE(std::is_nothrow_move_assignable<ContainerTemplate<Uncopyable>>::value); \
+    IS_TRUE(std::is_nothrow_move_assignable<ContainerTemplate<int>>::value); \
+    IS_TRUE(std::is_nothrow_move_assignable<ContainerTemplate<std::string>>::value); \
 } while (false)
 
 

@@ -204,7 +204,7 @@ namespace lai
             constructRange(rhs.cbegin(), rhs.cend());
         }
 
-        deque(deque && rhs) :
+        deque(deque && rhs) noexcept :
             map(std::move(rhs.map)),
             offset(std::move(rhs.offset)),
             dequeSize(std::move(rhs.dequeSize)),
@@ -228,7 +228,7 @@ namespace lai
             return *this;
         }
 
-        deque & operator=(deque && rhs)
+        deque & operator=(deque && rhs) noexcept
         {
             deque moveCopied(std::move(rhs));
             swap(moveCopied);

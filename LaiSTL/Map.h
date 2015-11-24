@@ -57,7 +57,7 @@ namespace lai
         using MyBase::Tree;
 
         map() :
-            MyBase(key_comp()) { }
+            MyBase(key_compare()) { }
 
         map(const map & rhs) :
             MyBase(rhs) { }

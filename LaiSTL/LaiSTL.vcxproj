@@ -22,6 +22,7 @@
     <ClInclude Include="Deque.h" />
     <ClInclude Include="Details\CommonTypes.h" />
     <ClInclude Include="Details\RB_Tree.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Set.h" />
     <ClInclude Include="Forward_List.h" />
     <ClInclude Include="List.h" />

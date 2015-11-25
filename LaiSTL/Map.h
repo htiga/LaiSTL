@@ -41,6 +41,7 @@ namespace lai
         };
     };
 
+
     template<typename TKey,
         typename TValue,
         typename Compare = std::less<TKey>,
@@ -48,7 +49,6 @@ namespace lai
     class map : public details::Tree<Map_TreeTraits<TKey, TValue, Compare, Allocator>>
     {
     private:
-        using MyTraits = Map_TreeTraits<TKey, TValue, Compare, Allocator>;
         using MyBase   = details::Tree<Map_TreeTraits<TKey, TValue, Compare, Allocator>>;
     public:
         using mapped_type = TValue;
@@ -73,7 +73,7 @@ namespace lai
 
         map & operator=(map && rhs) noexcept
         {
-            MyBase::operator=(rhs);
+            MyBase::operator=(std::move(rhs));
             return *this;
         }
 
@@ -82,5 +82,95 @@ namespace lai
             MyBase::operator=(iList);
             return *this;
         }
+
+        mapped_type & at(const key_type & key)
+        {
+            iterator iter = find(key);
+            if (iter == end())
+            {
+                throw std::out_of_range("Invalid map<TKey, TValue> key");
+            }
+            return iter->second;
+        }
+
+        const mapped_type & at(const key_type & key) const
+        {
+            return static_cast<const mapped_type &>(
+                const_cast<map*>(this)->at(key));
+        }
+
+        mapped_type & operator[](const key_type & key)
+        {
+            return try_emplace(key).first->second;
+        }
+
+        mapped_type & operator[](key_type && key)
+        {
+            return try_emplace(std::move(key)).first->second;
+        }
+
+        template<typename ... Args>
+        PairIb try_emplace(const key_type & key, Args && ... args)
+        {
+            return tryEmplaceHelper(key, std::forward<Args>(args)...);
+        }
+
+        template<typename ... Args>
+        PairIb try_emplace(key_type && key, Args && ... args)
+        {
+            return tryEmplaceHelper(std::move(key), std::forward<Args>(args)...);
+        }
+
+        template<typename ValueType>
+        PairIb insert_or_assign(const key_type & key, ValueType && obj)
+        {
+            return insertOrAssignHelper(key, std::forward<ValueType>(obj));
+        }
+
+        template<typename ValueType>
+        PairIb insert_or_assign(key_type && key, ValueType && obj)
+        {
+            return insertOrAssignHelper(std::move(key), std::forward<ValueType>(obj));
+        }
+
+    private:
+        template<typename KeyType, typename ... Args>
+        PairIb tryEmplaceHelper(KeyType && key, Args && ... args)
+        {
+            iterator iter = lower_bound(key);
+            if (iter == end() || compareKeys(key, iter->first))
+            {
+                return PairIb{ emplace_hint(iter, std::piecewise_construct,
+                                    std::forward_as_tuple(std::forward<KeyType>(key)),
+                                    std::forward_as_tuple(std::forward<Args>(args)...)),
+                               true };
+            }
+            return PairIb{ iter, false };
+        }
+
+        template<typename KeyType, typename ValueType>
+        PairIb insertOrAssignHelper(KeyType && key, ValueType && arg)
+        {
+            iterator iter = lower_bound(key);
+            if (iter == end() || compareKeys(key, iter->first))
+            {
+                return PairIb{ emplace_hint(iter, std::forward<KeyType>(key), 
+                                    std::forward<ValueType>(arg)),
+                                true };
+            }
+            iter->second = std::forward<ValueType>(arg);
+            return PairIb{ iter, false };
+        }
     };
+
+    template<typename TKey,
+        typename TValue,
+        typename TCompare,
+        typename Allocator>
+    inline void swap(
+        map<TKey, TValue, TCompare, Allocator> & lhs,
+        map<TKey, TValue, TCompare, Allocator> & rhs)
+    {
+        lhs.swap(rhs);
+    }
 }

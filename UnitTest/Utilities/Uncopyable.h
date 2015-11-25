@@ -3,7 +3,7 @@
 class Uncopyable
 {
 public:
-    explicit Uncopyable(int id = 0) :
+    Uncopyable(int id = 0) :
         myId(id) { }
 
     Uncopyable(Uncopyable && rhs) = default;

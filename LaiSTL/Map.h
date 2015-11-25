@@ -39,14 +39,14 @@ namespace lai
 
             TCompare myComp;
         };
-    };
+    }; // template struct Map_TreeTraits
 
 
     template<typename TKey,
         typename TValue,
         typename Compare = std::less<TKey>,
         typename Allocator = std::allocator<std::pair<const TKey, TValue>>>
-    class map : public details::Tree<Map_TreeTraits<TKey, TValue, Compare, Allocator>>
+    class multimapmap : public details::Tree<Map_TreeTraits<TKey, TValue, Compare, Allocator>>
     {
     private:
         using MyBase   = details::Tree<Map_TreeTraits<TKey, TValue, Compare, Allocator>>;
@@ -55,27 +55,6 @@ namespace lai
 
     public:
         using MyBase::Tree;
-
-        map() :
-            MyBase(key_compare()) { }
-
-        map(const map & rhs) :
-            MyBase(rhs) { }
-
-        map(map && rhs) noexcept :
-            MyBase(std::move(rhs)) { }
-
-        map & operator=(const map & rhs)
-        {
-            MyBase::operator=(rhs);
-            return *this;
-        }
-
-        map & operator=(map && rhs) noexcept
-        {
-            MyBase::operator=(std::move(rhs));
-            return *this;
-        }
 
         map & operator=(std::initializer_list<value_type> iList)
         {
@@ -161,7 +140,7 @@ namespace lai
             iter->second = std::forward<ValueType>(arg);
             return PairIb{ iter, false };
         }
-    };
+    };  // template class map
 
     template<typename TKey,
         typename TValue,
@@ -170,6 +149,92 @@ namespace lai
     inline void swap(
         map<TKey, TValue, TCompare, Allocator> & lhs,
         map<TKey, TValue, TCompare, Allocator> & rhs)
+    {
+        lhs.swap(rhs);
+    }
+
+
+    template<typename TKey, typename TValue, typename TCompare, typename Allocator>
+    struct MultiMap_TreeTraits
+    {
+        using key_type       = TKey;
+        using value_type     = std::pair<const TKey, TValue>;
+        using key_compare    = TCompare;
+        using allocator_type = Allocator;
+        using IsMulti        = details::TrueType;
+
+        static const key_type & getKey(const value_type & value) noexcept
+        {
+            return value.first;
+        }
+
+        struct value_compare
+        {
+            using result_type          = bool;
+            using first_argument_type  = typename Map_TreeTraits::value_type;
+            using second_argument_type = typename Map_TreeTraits::value_type;
+
+            bool operator()(const first_argument_type & lhs, const second_argument_type & rhs) const
+            {
+                return myComp(lhs.first, rhs.first);
+            }
+
+        protected:
+            value_compare(TCompare comp) :
+                myComp(comp) { }
+
+            TCompare myComp;
+        };
+    };  // template struct MultiMap_TreeTraits
+
+
+    template<typename TKey,
+        typename TValue,
+        typename Compare = std::less<TKey>,
+        typename Allocator = std::allocator<std::pair<const TKey, TValue>>>
+    class multimap :
+        public details::Tree<MultiMap_TreeTraits<TKey, TValue, Compare, Allocator>>
+    {
+    private:
+        using MyBase = details::Tree<MultiMap_TreeTraits<TKey, TValue, Compare, Allocator>>;
+    public:
+        using mapped_type = TValue;
+
+    public:
+        using MyBase::Tree;
+
+        multimap & operator=(std::initializer_list<value_type> & iList)
+        {
+            MyBase::operator=(iList);
+            return *this;
+        }
+
+        using MyBase::insert;
+
+        iterator insert(const value_type & value)
+        {
+            return MyBase::insert(value).first;
+        }
+
+        iterator insert(vlaue_type && value)
+        {
+            return MyBase::insert(std::move(value)).first;
+        }
+
+        template<typename ... Args>
+        iterator emplace(Args && ... args)
+        {
+            return MyBase::emplace(std::forward<Args>(args)...).first;
+        }
+    };  // template class multimap
+
+    template<typename TKey,
+        typename TValue,
+        typename TCompare,
+        typename Allocator>
+        inline void swap(
+            multimap<TKey, TValue, TCompare, Allocator> & lhs,
+            multimap<TKey, TValue, TCompare, Allocator> & rhs)
     {
         lhs.swap(rhs);
     }

@@ -56,5 +56,8 @@
     <ClCompile Include="TestCases\TestMultiSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\TestMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

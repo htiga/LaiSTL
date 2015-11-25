@@ -171,7 +171,7 @@ namespace lai
         template<typename TreeTraits>
         class Tree
         {
-        private:
+        protected:
             using MyTraits = TreeTraits;
             using IsMulti  = typename MyTraits::IsMulti;
         public:
@@ -228,13 +228,13 @@ namespace lai
                 Tree(iList, key_compare()) { }
 
             Tree(const Tree & rhs) :
-                Tree(rhs.key_comp())
+                Tree(rhs.myKeyCompare)
             {
                 doCopy(rhs);
             }
 
-            Tree(Tree && rhs) :
-                Tree(rhs.key_comp())
+            Tree(Tree && rhs) noexcept :
+                Tree(std::move(rhs.myKeyCompare))
             {
                 using std::swap;
                 swap(myHead, rhs.myHead);
@@ -258,7 +258,7 @@ namespace lai
                 return *this;
             }
 
-            Tree & operator=(Tree && rhs)
+            Tree & operator=(Tree && rhs) noexcept
             {
                 Tree copied = std::move(rhs);
                 swap(copied);
@@ -267,8 +267,7 @@ namespace lai
 
             Tree & operator=(std::initializer_list<value_type> iList)
             {
-                Tree tree = iList;
-                swap(tree);
+                swap(Tree(iList, myKeyCompare));
                 return *this;
             }
 
@@ -586,7 +585,7 @@ namespace lai
                 return rangeLeng;
             }
 
-            void swap(Tree & rhs)
+            void swap(Tree & rhs) noexcept
             {
                 using std::swap;
                 swap(myHead, rhs.myHead);
@@ -677,7 +676,7 @@ namespace lai
                 return node;
             }
 
-        private:
+        protected:
             NodePtr allocateNode(size_type count)
             {
                 return nodeAlloc.allocate(count);
@@ -1105,7 +1104,7 @@ namespace lai
 
             bool compareKeys(const key_type & lhs, const key_type & rhs) const
             {
-                return key_comp()(lhs, rhs);
+                return myKeyCompare(lhs, rhs);
             }
 
             bool compareValues(const value_type & lhs, const value_type & rhs) const
@@ -1137,7 +1136,7 @@ namespace lai
             {
                 return myHead->right;
             }
-        private:
+        protected:
             // myHead->parent points to the root, or itself if empty()
             // myHead->left points to the minimum node, or itself if empty()
             // myHead->right points to the maximum node, or itself if empty()

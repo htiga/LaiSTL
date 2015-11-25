@@ -3,14 +3,17 @@
 #include <crtdbg.h>
 
 #include <iostream>
-#include "Set.h"
+#include "Map.h"
+#include <map>
+#include <string>
+
 
 
 int main()
 {
+    std::cout << std::boolalpha;
     {
     }
-
     _CrtDumpMemoryLeaks();
     return 0;
 }

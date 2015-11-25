@@ -34,27 +34,6 @@ namespace lai
     public:
         using MyBase::Tree;
 
-        set() :
-            set(key_compare()) { }
-
-        set(const set & rhs) :
-            MyBase(rhs) { }
-
-        set(set && rhs) noexcept :
-            MyBase(std::move(rhs)) { }
-
-        set & operator=(const set & rhs)
-        {
-            MyBase::operator=(rhs);
-            return *this;
-        }
-
-        set & operator=(set && rhs) noexcept
-        {
-            MyBase::operator=(std::move(rhs));
-            return *this;
-        }
-
         set & operator=(std::initializer_list<value_type> iList)
         {
             MyBase::operator=(iList);
@@ -98,27 +77,6 @@ namespace lai
 
     public:
         using MyBase::Tree;
-
-        multiset() :
-            multiset(key_compare()) { }
-
-        multiset(const multiset & rhs) :
-            MyBase(rhs) { }
-
-        multiset(multiset && rhs) noexcept :
-            MyBase(std::move(rhs)) { }
-
-        multiset & operator=(const multiset & rhs)
-        {
-            MyBase::operator=(rhs);
-            return *this;
-        }
-
-        multiset & operator=(multiset && rhs) noexcept
-        {
-            MyBase::operator=(std::move(rhs));
-            return *this;
-        }
 
         multiset & operator=(std::initializer_list<value_type> iList)
         {

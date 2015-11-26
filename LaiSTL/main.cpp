@@ -3,11 +3,13 @@
 #include <crtdbg.h>
 
 #include <iostream>
-#include "Map.h"
-#include <map>
 #include <string>
 
-
+template<typename TPair>
+void PrintPair(const TPair & pair) noexcept
+{
+    std::cout << "{ " << pair.first << ", " << pair.second << " }";
+}
 
 int main()
 {

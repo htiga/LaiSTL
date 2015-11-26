@@ -46,7 +46,7 @@ namespace lai
         typename TValue,
         typename Compare = std::less<TKey>,
         typename Allocator = std::allocator<std::pair<const TKey, TValue>>>
-    class multimapmap : public details::Tree<Map_TreeTraits<TKey, TValue, Compare, Allocator>>
+    class map : public details::Tree<Map_TreeTraits<TKey, TValue, Compare, Allocator>>
     {
     private:
         using MyBase   = details::Tree<Map_TreeTraits<TKey, TValue, Compare, Allocator>>;
@@ -203,7 +203,7 @@ namespace lai
     public:
         using MyBase::Tree;
 
-        multimap & operator=(std::initializer_list<value_type> & iList)
+        multimap & operator=(std::initializer_list<value_type> iList)
         {
             MyBase::operator=(iList);
             return *this;
@@ -216,7 +216,7 @@ namespace lai
             return MyBase::insert(value).first;
         }
 
-        iterator insert(vlaue_type && value)
+        iterator insert(value_type && value)
         {
             return MyBase::insert(std::move(value)).first;
         }

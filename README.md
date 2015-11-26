@@ -16,3 +16,11 @@ Deque.h
 List.h
 
 Forward_List.h
+
+Set.h
+
+MultiSet.h
+
+Map.h
+
+MultiMap.h

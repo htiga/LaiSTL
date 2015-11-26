@@ -172,6 +172,7 @@
     <ClCompile Include="TestCases\TestForwardList.cpp" />
     <ClCompile Include="TestCases\TestList.cpp" />
     <ClCompile Include="TestCases\TestMap.cpp" />
+    <ClCompile Include="TestCases\TestMultiMap.cpp" />
     <ClCompile Include="TestCases\TestMultiSet.cpp" />
     <ClCompile Include="TestCases\TestSet.cpp" />
     <ClCompile Include="TestCases\TestVector.cpp" />

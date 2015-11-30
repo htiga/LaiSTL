@@ -723,9 +723,7 @@ namespace lai
             // sort [first, middle) and [middle, last)
             first = mergeSort(first, middle, halfLen, comp);
             middle = mergeSort(middle, last, length - halfLen, comp);
-            auto newFirst = middle == last ? first :
-                            first == middle ? middle :
-                            comp(*middle, *first) ? middle : first;
+            auto newFirst = comp(*middle, *first) ? middle : first;
 
             // merge [first, middle) and [middle, last)
             while (first != middle && middle != last)

@@ -145,21 +145,6 @@ namespace lai
             }
         };
 
-        template<bool, typename T1, typename T2>
-        struct Select
-        {
-            using type = T2;
-        };
-
-        template<typename T1, typename T2>
-        struct Select<true, T1, T2>
-        {
-            using type = T1;
-        };
-
-        template<bool pred, typename T1, typename T2>
-        using SelectType = typename Select<pred, T1, T2>::type;
-
         // TreeTraits must contain following public members :
         //      typedefs : key_type
         //                 key_compare

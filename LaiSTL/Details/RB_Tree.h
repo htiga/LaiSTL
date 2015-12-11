@@ -166,7 +166,7 @@ namespace lai
         //                 value_type 
         //                 value_compare
         //                 allocator_type
-        //                 IsMulti (std::true_type or std::false_type)
+        //                 IsMulti (details::TrueType or details::FalseType)
         //      static const key_type & getKey(const value_type & value);
         template<typename TreeTraits>
         class Tree

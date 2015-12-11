@@ -156,7 +156,7 @@ namespace lai
         template<typename TreeTraits>
         class Tree
         {
-        protected:
+        private:
             using MyTraits = TreeTraits;
             using IsMulti  = typename MyTraits::IsMulti;
         public:
@@ -180,7 +180,7 @@ namespace lai
             using PairIb = std::pair<iterator, bool>;
             using PairIi = std::pair<iterator, iterator>;
             using PairCc = std::pair<const_iterator, const_iterator>;
-        public:
+        private:
             using Node      = TreeNode<value_type>;
             using NodeAlloc = typename allocator_type::template rebind<Node>::other;
             using NodePtr   = Node *;

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Deque.h" />
     <ClInclude Include="Details\CommonTypes.h" />
+    <ClInclude Include="Details\HashTable.h" />
     <ClInclude Include="Details\RB_Tree.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Set.h" />

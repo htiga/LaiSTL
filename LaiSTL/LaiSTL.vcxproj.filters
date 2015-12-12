@@ -9,6 +9,7 @@
     <ClInclude Include="Details\RB_Tree.h" />
     <ClInclude Include="Set.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Details\HashTable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

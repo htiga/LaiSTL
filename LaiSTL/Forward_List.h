@@ -60,16 +60,6 @@ namespace lai
             return old;
         }
 
-        bool operator==(const FListIterator & rhs) const noexcept
-        {
-            return myNode == rhs.myNode;
-        }
-
-        bool operator!=(const FListIterator & rhs) const noexcept
-        {
-            return !(*this == rhs);
-        }
-
         reference operator*() const
         {
             return myNode->value;
@@ -78,6 +68,16 @@ namespace lai
         pointer operator->() const
         {
             return std::addressof(operator*());
+        }
+
+        friend bool operator==(const FListIterator & lhs, const FListIterator & rhs) noexcept
+        {
+            return lhs.myNode == rhs.myNode;
+        }
+
+        friend bool operator!=(const FListIterator & lhs, const FListIterator & rhs) noexcept
+        {
+            return !(lhs == rhs);
         }
     }; // template class FListIterator
 

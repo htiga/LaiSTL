@@ -94,19 +94,22 @@ namespace lai
 
         void assign(size_type count, const T & value)
         {
-            swap(vector(count, value));
+            vector vec(count, value);
+            swap(vec);
         }
 
         template<typename InputIt,
             typename = std::enable_if_t<!std::is_integral<InputIt>::value>>
         void assign(InputIt first, InputIt last)
         {
-            swap(vector(first, last));
+            vector vec(first, last);
+            swap(vec);
         }
 
         void assign(std::initializer_list<T> iList)
         {
-            swap(vector(iList));
+            vector vec(iList);
+            swap(vec);
         }
 
         ~vector()

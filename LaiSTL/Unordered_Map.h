@@ -38,6 +38,7 @@ namespace lai
     private:
         using MyBase = details::HashTable<UMap_HashTraits<TKey, TValue, Hash, KeyEqual, Allocator>>;
     public:
+        using mapped_type = TValue;
         using MyBase::HashTable;
     };
 
@@ -75,6 +76,7 @@ namespace lai
         using MyBase = details::HashTable<
             UMultiMap_HashTraits<TKey, TValue, Hash, KeyEqual, Allocator>>;
     public:
+        using mapped_type = TValue;
         using MyBase::HashTable;
     };
 }

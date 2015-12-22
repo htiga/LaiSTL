@@ -54,8 +54,8 @@ namespace lai
                 NodePtr>() const
             {
                 return HashTableIterator<THashTable,
-                    typename THashTable::reference,
-                    typename THashTable::pointer,
+                    typename THashTable::const_reference,
+                    typename THashTable::const_pointer,
                     NodePtr>(myNode);
             }
 
@@ -295,12 +295,22 @@ namespace lai
                 typename = std::enable_if_t<!std::is_integral<InputIt>::value >>
             void insert(InputIt first, InputIt last)
             {
-                // todo
+                while (first != last)
+                {
+                    insert(*first++);
+                }
             }
 
             void insert(std::initializer_list<value_type> iList)
             {
-                // todo
+                insert(iList.begin(), iList.end());
+            }
+
+            template<typename ... Args>
+            PairIb emplace(Args && ... args)
+            {
+                NodePtr node = createNode(std::forward<Args>(args)...);
+                return insertHelper(node->value, node);
             }
 
             iterator erase(const_iterator pos) noexcept

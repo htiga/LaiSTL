@@ -103,7 +103,7 @@ namespace UnitTest
             IS_TRUE(m.rbegin() == m.rend());
             IS_TRUE(m.crbegin() == m.crend());
 
-            using Compare = TestGreater<int>;
+            using Compare = LabeledGreater<int>;
             MAP<int, int, Compare> m1;
             IS_TRUE(m1.empty());
             IS_TRUE(m1.size() == 0);
@@ -127,7 +127,7 @@ namespace UnitTest
             MAP<int, double> m = data;
             AssertContainerEqual(m, S_MAP<int, double>(data));
 
-            using Compare = TestGreater<int>;
+            using Compare = LabeledGreater<int>;
             MAP<int, double, Compare> m1(data, Compare(1));
             IS_TRUE(m1.key_comp() == Compare(1));
             AssertContainerEqual(m1, S_MAP<int, double, std::greater<int>>(data, Compare()));
@@ -147,7 +147,7 @@ namespace UnitTest
             AssertContainerEqual(m,
                 S_MAP<int, double>(data.begin(), data.end()));
 
-            using Compare = TestGreater<int>;
+            using Compare = LabeledGreater<int>;
             MAP<int, double, Compare> m1(data.begin(), data.end(), Compare(1));
             IS_TRUE(m1.key_comp() == Compare(1));
             AssertContainerEqual(m1,
@@ -157,7 +157,7 @@ namespace UnitTest
         TEST_METHOD(TestCopyConstructor)
         {
             using PairId = std::pair<const int, double>;
-            using Compare = TestGreater<int>;
+            using Compare = LabeledGreater<int>;
             std::initializer_list<PairId> data =
             {
                 { 1,1 },{ 2,1 },{ 3,1 },
@@ -209,7 +209,7 @@ namespace UnitTest
                 MAP<int, double, std::greater<int>>>::value);
 
             using PairId = std::pair<const int, double>;
-            using Compare = TestGreater<int>;
+            using Compare = LabeledGreater<int>;
             std::initializer_list<PairId> data =
             {
                 { 1,1 },{ 2,1 },{ 3,1 },
@@ -256,7 +256,7 @@ namespace UnitTest
         TEST_METHOD(TestCopyAssignmentOperator)
         {
             using PairId = std::pair<const int, double>;
-            using Compare = TestGreater<int>;
+            using Compare = LabeledGreater<int>;
             std::initializer_list<PairId> data1 =
             {
                 { 1,1 },{ 2,1 },{ 3,1 }
@@ -332,7 +332,7 @@ namespace UnitTest
 
         TEST_METHOD(TestMoveAssignmentOperator)
         {
-            using Compare = TestGreater<int>;
+            using Compare = LabeledGreater<int>;
             using PairId = std::pair<const int, double>;
             std::initializer_list<PairId> data1 =
             {
@@ -444,7 +444,7 @@ namespace UnitTest
 
         TEST_METHOD(TestAssignmentOperatorInitList)
         {
-            using Compare = TestGreater<int>;
+            using Compare = LabeledGreater<int>;
             using PairId = std::pair<const int, double>;
             std::initializer_list<PairId> data1 =
             {
@@ -684,7 +684,7 @@ namespace UnitTest
                 IS_TRUE(m.empty());
             }
             {
-                MAP<int, double, TestGreater<int>> m;
+                MAP<int, double, LabeledGreater<int>> m;
                 IS_TRUE(m.empty());
                 m.insert({ 1,1 });
                 IS_FALSE(m.empty());
@@ -712,7 +712,7 @@ namespace UnitTest
                 IS_TRUE(m.size() == 0);
             }
             {
-                MAP<int, double, TestGreater<int>> m;
+                MAP<int, double, LabeledGreater<int>> m;
                 IS_TRUE(m.size() == 0);
                 m.insert({ 2, 1.5 });
                 IS_TRUE(m.size() == 1);
@@ -742,7 +742,7 @@ namespace UnitTest
             }
 
             {
-                MAP<int, double, TestGreater<int>> m
+                MAP<int, double, LabeledGreater<int>> m
                 {
                     { 1,1.5 },{ 2,1.5 },{ 3,1.5 },{ 4,1.5 },{ 5,1.5 },{ 6,1.5 },{ 7,1.5 },{ 8,1.5 }
                 };
@@ -2072,7 +2072,7 @@ namespace UnitTest
                     IS_TRUE(m2 == m1_save);
                 }
                 {
-                    using C = TestGreater<int>;
+                    using C = LabeledGreater<int>;
                     typedef std::map<int, double, C> M;
                     V ar1[] =
                     {

@@ -156,7 +156,7 @@ namespace lai
             // constructor
             //////////////
             HashTable(size_type bucketCount, const hasher & hash, const key_equal & keyEqual) :
-                buckets(bucketCount),
+                buckets(validateBucketCount(bucketCount)),
                 mySize(0),
                 myHead(nullptr),
                 maxLoadFactor(DEFAULT_MAX_LOAD_FACTOR),
@@ -171,6 +171,45 @@ namespace lai
 
             HashTable() :
                 HashTable(DEFAULT_BUCKET_COUNT) { }
+
+            HashTable(const HashTable & rhs) :
+                isKeyEqual(rhs.isKeyEqual),
+                getHashCode(rhs.getHashCode),
+                maxLoadFactor(rhs.maxLoadFactor),
+                buckets(rhs.bucket_count()),
+            {
+                insert(rhs.begin(), rhs.end());
+            }
+
+            HashTable(HashTable && rhs) :
+                isKeyEqual(std::move(rhs.isKeyEqual)),
+                getHashCode(std::move(rhs.getHashCode)),
+                maxLoadFactor(std::move(rhs.maxLoadFactor)),
+                buckets(std::move(rhs.buckets)),
+                myHead(std::move(rhs.myHead)),
+                mySize(std::move(rhs.mySize))
+            {
+                rhs.myHead = nullptr;
+                rhs.mySize = 0;
+            }
+
+            HashTable(std::initializer_list<value_type> iList) :
+                HashTable(iList, DEFAULT_BUCKET_COUNT, hasher(), key_equal()) { }
+
+            HashTable(std::initializer_list<value_type> iList, size_type bucketCount) :
+                HashTable(iList, bucketCount, hasher(), key_equal()) { }
+
+            HashTable(std::initializer_list<value_type> iList,
+                size_type bucketCount,
+                const hasher & hash) : HashTable(iList, bucketCount, hash, key_equal()) { }
+
+            HashTable(std::initializer_list<value_type> iList,
+                size_type bucketCount,
+                const hasher & hash,
+                const key_equal & equal) : HashTable(bucketCount, hash, equal)
+            {
+                insert(iList);
+            }
 
             ~HashTable()
             {
@@ -270,6 +309,17 @@ namespace lai
             // modifiers
             ////////////
 
+            void swap(HashTable & other) // exceptions throwed by swap key_equal or hasher
+            {
+                using std::swap;
+                swap(isKeyEqual, other.isKeyEqual);
+                swap(getHashCode, other.getHashCode);
+                buckets.swap(other.buckets);
+                swap(myHead, other.myHead);
+                swap(mySize, other.mySize);
+                swap(maxLoadFactor, other.maxLoadFactor);
+            }
+
             void clear() noexcept
             {
                 for (NodePtr next; myHead != nullptr; myHead = next)
@@ -277,8 +327,8 @@ namespace lai
                     next = myHead->next;
                     deallocateNode(myHead);
                 }
-                buckets.clear();
                 mySize = 0;
+                buckets.assign(DEFAULT_BUCKET_COUNT, nullptr);
             }
 
             PairIb insert(const value_type & value)
@@ -376,26 +426,17 @@ namespace lai
 
             void max_load_factor(float newMaxLoadFactor)
             {
-                if (newMaxLoadFactor < load_factor())
-                {
-                    size_type newBucketCount = size() / newMaxLoadFactor;
-                    rehash(newBucketCount);
-                }
                 maxLoadFactor = newMaxLoadFactor;
+                if (maxLoadFactor < load_factor())
+                {
+                    rehash(0);
+                }
             }
 
             void rehash(size_type newBucketCount)
             {
-                if (newBucketCount == bucket_count())
-                {
-                    return;
-                }
-                // adjust bucket count to power of 2
-                size_type realBucketCount = DEFAULT_BUCKET_COUNT;
-                while (realBucketCount < newBucketCount)
-                {
-                    realBucketCount *= 2;
-                }
+                // adjust bucket count
+                size_type realBucketCount = validateBucketCount(newBucketCount);
                 while (realBucketCount < size() / max_load_factor())
                 {
                     realBucketCount *= 2;
@@ -441,6 +482,23 @@ namespace lai
             key_equal key_eq() const
             {
                 return isKeyEqual;
+            }
+
+            // Lookup
+            ///////////
+
+            size_type count(const key_type & key) const
+            {
+                auto bucketIndex = bucket(key);
+                size_type result = 0;
+                for (auto iter = begin(bucketIndex); iter != end(bucketIndex); ++iter)
+                {
+                    if (isKeyEqual(key, MyTraits::getKey(*iter)))
+                    {
+                        ++result;
+                    }
+                }
+                return result;
             }
 
         private:
@@ -610,6 +668,17 @@ namespace lai
                 {
                     rehash(0);
                 }
+            }
+
+            // return the minimum valid bucket count that is greater than <bucketCount>
+            static size_type validateBucketCount(size_type bucketCount) noexcept
+            {   // bucketCount must be 2's power and at least DEFAULT_BUCKET_COUNT
+                size_type legalBucketCount = DEFAULT_BUCKET_COUNT;
+                while (legalBucketCount < bucketCount)
+                {
+                    legalBucketCount *= 2;
+                }
+                return legalBucketCount;
             }
 
         };  // template class HashTable

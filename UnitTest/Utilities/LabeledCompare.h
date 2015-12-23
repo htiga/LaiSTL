@@ -29,3 +29,6 @@ using LabeledLess = LabeledCompare<std::less<TKey>>;
 
 template<typename TKey>
 using LabeledEqualTo = LabeledCompare<std::equal_to<TKey>>;
+
+template<typename TKey>
+using LabeledHash = LabeledCompare<std::hash<TKey>>;

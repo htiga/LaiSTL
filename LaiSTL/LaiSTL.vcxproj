@@ -27,6 +27,8 @@
     <ClInclude Include="Set.h" />
     <ClInclude Include="Forward_List.h" />
     <ClInclude Include="List.h" />
+    <ClInclude Include="Unordered_Map.h" />
+    <ClInclude Include="Unordered_Set.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>

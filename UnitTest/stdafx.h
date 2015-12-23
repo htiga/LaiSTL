@@ -17,6 +17,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #include <initializer_list>
 #include <iterator>
 #include "Utilities\Uncopyable.h"
+#include "Utilities\LabeledCompare.h"
 #include "Utilities\macros.h"
 #include "Utilities\TestContainerUtilities.h"
 #include "Utilities\TestSequenceContainer.h"

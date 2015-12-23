@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 
+// labeled comparer for unit tests
 template<typename Compare>
 struct LabeledCompare : public Compare
 {
@@ -25,3 +26,6 @@ using LabeledGreater = LabeledCompare<std::greater<TKey>>;
 
 template<typename TKey>
 using LabeledLess = LabeledCompare<std::less<TKey>>;
+
+template<typename TKey>
+using LabeledEqualTo = LabeledCompare<std::equal_to<TKey>>;

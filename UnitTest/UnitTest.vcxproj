@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Utilities\LabeledCompare.h" />
     <ClInclude Include="Utilities\macros.h" />
     <ClInclude Include="Utilities\TestContainerUtilities.h" />
     <ClInclude Include="Utilities\TestIterator.h" />
@@ -175,6 +176,8 @@
     <ClCompile Include="TestCases\TestMultiMap.cpp" />
     <ClCompile Include="TestCases\TestMultiSet.cpp" />
     <ClCompile Include="TestCases\TestSet.cpp" />
+    <ClCompile Include="TestCases\TestUnorderedMultiSet.cpp" />
+    <ClCompile Include="TestCases\TestUnorderedSet.cpp" />
     <ClCompile Include="TestCases\TestVector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -14,31 +14,6 @@ namespace UnitTest
 {
     namespace
     {
-        template<typename Compare>
-        struct TestCompare : public Compare
-        {
-            int id;
-
-            explicit TestCompare(int i = 0) :
-                Compare(), id(i) { }
-
-            bool operator==(const TestCompare & rhs) const noexcept
-            {
-                return id == rhs.id;
-            }
-
-            bool operator!=(const TestCompare & rhs) const noexcept
-            {
-                return !(*this == rhs);
-            }
-        };
-
-        template<typename TKey>
-        using TestGreater = TestCompare<std::greater<TKey>>;
-
-        template<typename TKey>
-        using TestLess = TestCompare<std::less<TKey>>;
-
         class DefaultOnly
         {
             int data_;

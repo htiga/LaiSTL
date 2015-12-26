@@ -211,6 +211,32 @@ namespace lai
                 insert(iList);
             }
 
+            template<typename InputIt,
+                typename = std::enable_if_t<!std::is_integral<InputIt>::value>>
+                HashTable(InputIt first, InputIt last) :
+                HashTable(first, last, DEFAULT_BUCKET_COUNT, hasher(), key_equal()) { }
+
+            template<typename InputIt,
+                typename = std::enable_if_t<!std::is_integral<InputIt>::value >>
+                HashTable(InputIt first, InputIt last, size_type bucketCount) :
+                HashTable(first, last, bucketCount, hasher(), key_equal()) { }
+
+            template<typename InputIt,
+                typename = std::enable_if_t<!std::is_integral<InputIt>::value >>
+                HashTable(InputIt first, InputIt last,
+                    size_type bucketCount, const hasher & hash) :
+                HashTable(first, last, bucketCount, hash, key_equal()) { }
+
+
+            template<typename InputIt,
+                typename = std::enable_if_t<!std::is_integral<InputIt>::value >>
+                HashTable(InputIt first, InputIt last,
+                    size_type bucketCount, const hasher & hash, const key_equal & equal) :
+                HashTable(bucketCount, hash, equal)
+            {
+                insert(first, last);
+            }
+
             ~HashTable()
             {
                 clear();

@@ -11,8 +11,6 @@ namespace UnitTest
 {
     TEST_CLASS(TestUnorderedSet)
     {
-
-
         TEST_METHOD(TestTypeAlias)
         {
             // http://llvm.org/svn/llvm-project/libcxx/trunk/test/std/containers/unord/unord.set/types.pass.cpp
